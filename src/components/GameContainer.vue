@@ -75,7 +75,7 @@ const movePlayer = (event) => {
 let gameContainer; // Reference to the game container
 
 const monsters = reactive([
-  { imagePath: 'src/components/entity images/slime.png', position: { x: 1200, y: 600 }, health: 55 },
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 400, y: 550 }, health: 55 },
   { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 75 }
   // Add more monsters as needed
 ]);

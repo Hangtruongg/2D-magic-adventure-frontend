@@ -1,34 +1,34 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div class="monster">
+  <div class="monster-container" :style="{ left: monsterData.position.x + 'px', top: monsterData.position.y + 'px', position: 'absolute' }">
     <!-- Monster image -->
-    <img :src="image" 
-        :style="{ left: position.x + 'px', top: position.y + 'px' }"
-        :alt="'Monster'"
-        class="monster-image">
+    <img :src="monsterData.imagePath" :alt="'Monster'" class="monster-image">
     <!-- Monster health display -->
-    <div>{{ health }}</div>
+    <div class="health">{{ monsterData.health }}</div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { defineProps } from 'vue';
 
 const props = defineProps({
-    monsterData: Object
-})
-
-const { monsterData } = props;
-
-const image = ref(monsterData.imagePath)
-const position = ref(monsterData.position);
-const health = ref(monsterData.health);
-
+  monsterData: Object
+});
 </script>
 
 <style scoped>
+.monster-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .monster-image {
-    width: 50px;
-    height: 50px;
+  width: 50px;
+  height: 50px;
+}
+
+.health {
+  margin-top: 5px; /* Adjust margin as needed */
+  align-items: 'center';
 }
 </style>
