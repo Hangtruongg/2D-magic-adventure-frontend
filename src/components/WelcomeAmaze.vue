@@ -1,5 +1,6 @@
 <script>
 import myImage from  '@/assets/background/waterfall.gif'
+import { onMounted } from 'vue';
 
 export default {
   name: 'WelcomeAmaze',
@@ -14,6 +15,10 @@ export default {
     }
   }
 };
+
+onMounted(() => {
+  // component is now mounted.
+  console.log("WelcomeAmaze mounted");})
 
 </script> <!--end step 1-->
 

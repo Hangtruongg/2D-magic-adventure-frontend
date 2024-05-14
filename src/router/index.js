@@ -1,24 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import GameCenter from '@/components/GameCenter.vue'
+// import GameCenter from '@/components/GameCenter.vue'
+import GameContainer from '@/components/GameContainer.vue'
 import WelcomeAmaze from '@/components/WelcomeAmaze.vue';
 
-const routes = [
-  {
-    path: '/',
-    component: WelcomeAmaze
-  },
-  {
-    path: '/game',
-    name: "game",
-    component: GameCenter
-  }
-
-];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: routes
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: WelcomeAmaze
+    },
+    {
+      path: '/game',
+      name: 'game',
+      component: GameContainer
+    }
+  ]
 })
-
 export default router // end step 1
-
