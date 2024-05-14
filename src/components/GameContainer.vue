@@ -8,6 +8,10 @@
   >
     <!-- Render the player component -->
     <Player :position="playerData.position" />
+
+    <Monster v-for="(monster, index) in monsters" :key="index" :monsterData="monster" :initialPosition="monster.position"/>
+    
+
     <div
       class="health-display"
       :style="{ left: `${minX}px` }"
@@ -21,6 +25,7 @@
 <script setup>
 import { reactive, onMounted, onUnmounted } from 'vue'
 import Player from './Player.vue' // Import the Player component
+import Monster from './Monster.vue';
 
 // Reactive object to store player position
 const playerData = reactive({
@@ -68,6 +73,12 @@ const movePlayer = (event) => {
   }
 };
 let gameContainer; // Reference to the game container
+
+const monsters = reactive([
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 1200, y: 600 }, health: 55 },
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 75 }
+  // Add more monsters as needed
+]);
 
 onMounted(() => {
   // component is now mounted.
