@@ -9,7 +9,12 @@
     <!-- Render the player component -->
     <Player :position="playerData.position" />
 
-    <Monster v-for="(monster, index) in monsters" :key="index" :monsterData="monster" :initialPosition="monster.position"/>
+    <!-- <Monster v-for="(monster, index) in monsters" :key="index" :monsterData="monster" :initialPosition="monster.position"/> -->
+    <div v-for = "(monster, index) in monsters" :key="index">
+      <template v-if = "monster.health > 0">
+        <Monster :monsterData="monster" :initialPosition="monster.position"/>
+      </template>
+    </div>
     
 
     <div
@@ -76,7 +81,7 @@ let gameContainer; // Reference to the game container
 
 const monsters = reactive([
   { imagePath: 'src/components/entity images/slime.png', position: { x: 400, y: 550 }, health: 55 },
-  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 75 }
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 10 }
   // Add more monsters as needed
 ]);
 
