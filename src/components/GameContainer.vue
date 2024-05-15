@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div v-if="playerData.health > 0"
+  <div
+    v-if="playerData.health > 0"
     class="game"
     tabindex="0"
     @keydown="movePlayer"
@@ -10,107 +11,101 @@
     <Player :position="playerData.position" />
 
     <!-- <Monster v-for="(monster, index) in monsters" :key="index" :monsterData="monster" :initialPosition="monster.position"/> -->
-    <div v-for = "(monster, index) in monsters" :key="index">
-      <template v-if = "monster.health > 0">
-        <Monster :monsterData="monster" :initialPosition="monster.position"/>
+    <div v-for="(monster, index) in monsters" :key="index">
+      <template v-if="monster.health > 0">
+        <Monster :monsterData="monster" :initialPosition="monster.position" />
       </template>
     </div>
-    
 
-    <div
-      class="health-display"
-      :style="{ left: `${minX}px` }"
-  >
-      Health: {{ playerData.health }}
-    </div>
+    <div class="health-display" :style="{ left: `${minX}px` }">Health: {{ playerData.health }}</div>
   </div>
-  
 </template>
 
 <script setup>
 import { reactive, onMounted, onUnmounted } from 'vue'
 import Player from './Player.vue' // Import the Player component
-import Monster from './Monster.vue';
+import Monster from './Monster.vue'
 
 // Reactive object to store player position
 const playerData = reactive({
   position: { x: 0, y: 0 },
-  health: 100})
+  health: 100
+})
 
 // Function to handle player movement
 const movePlayer = (event) => {
-  const speed = 50; // Adjust speed as needed
-  const gameContainer = document.querySelector('.game');
-  const gameRect = gameContainer.getBoundingClientRect();
-  const playerElement = document.querySelector('.player-image');
-  const playerRect = playerElement.getBoundingClientRect();
+  const speed = 50 // Adjust speed as needed
+  const gameContainer = document.querySelector('.game')
+  const gameRect = gameContainer.getBoundingClientRect()
+  const playerElement = document.querySelector('.player-image')
+  const playerRect = playerElement.getBoundingClientRect()
 
-  const minX = gameRect.left ;
-  const maxX = gameRect.right;
-  const minY = gameRect.top;
-  const maxY = gameRect.bottom;
+  const minX = gameRect.left
+  const maxX = gameRect.right
+  const minY = gameRect.top
+  const maxY = gameRect.bottom
 
   switch (event.key) {
     case 'w':
     case 'W':
       if (playerRect.top - speed >= minY) {
-        playerData.position.y -= speed;
+        playerData.position.y -= speed
       }
-      break;
+      break
     case 's':
     case 'S':
       if (playerRect.bottom + speed <= maxY) {
-        playerData.position.y += speed;
+        playerData.position.y += speed
       }
-      break;
+      break
     case 'a':
     case 'A':
       if (playerRect.left - speed >= minX) {
-        playerData.position.x -= speed;
+        playerData.position.x -= speed
       }
-      break;
+      break
     case 'd':
     case 'D':
       if (playerRect.right + speed <= maxX) {
-        playerData.position.x += speed;
+        playerData.position.x += speed
       }
-      break;
+      break
   }
-};
-let gameContainer; // Reference to the game container
+}
+let gameContainer // Reference to the game container
 
 let monsters = reactive([
   { imagePath: 'src/components/entity images/slime.png', position: { x: 400, y: 550 }, health: 55 },
-  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 0 }
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 100 }
   // Add more monsters as needed
-]);
+])
 
-monsters = monsters.filter(monster => monster.health > 0);
+monsters = monsters.filter((monster) => monster.health > 0)
 
 onMounted(() => {
   // component is now mounted.
-  console.log("GameContainer mounted");
-  gameContainer = document.querySelector('.game');
+  console.log('GameContainer mounted')
+  gameContainer = document.querySelector('.game')
 
   // Listen for window resize event
-  window.addEventListener('resize', handleWindowResize);
-});
+  window.addEventListener('resize', handleWindowResize)
+})
 
 onUnmounted(() => {
   // Remove event listener when component is unmounted
-  window.removeEventListener('resize', handleWindowResize);
-});
+  window.removeEventListener('resize', handleWindowResize)
+})
 
 const handleWindowResize = () => {
   // Update player position when window is resized
-  const gameRect = gameContainer.getBoundingClientRect();
-  const playerElement = document.querySelector('.player-image');
-  const playerRect = playerElement.getBoundingClientRect();
+  const gameRect = gameContainer.getBoundingClientRect()
+  const playerElement = document.querySelector('.player-image')
+  const playerRect = playerElement.getBoundingClientRect()
 
   // Adjust player position based on game container's new dimensions
-  playerData.position.x = Math.min(playerData.position.x, gameRect.width - playerRect.width);
-  playerData.position.y = Math.min(playerData.position.y, gameRect.height - playerRect.height);
-};
+  playerData.position.x = Math.min(playerData.position.x, gameRect.width - playerRect.width)
+  playerData.position.y = Math.min(playerData.position.y, gameRect.height - playerRect.height)
+}
 </script>
 
 <!-- Add Player component styles -->
@@ -122,6 +117,7 @@ const handleWindowResize = () => {
   border: 4px solid black;
   margin: auto; /* Center the container horizontally */
   position: relative; /* Ensure positioning relative to its containing element */
+  justify-content: center;
 }
 .health-display {
   position: absolute;
