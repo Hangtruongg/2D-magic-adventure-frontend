@@ -110,11 +110,13 @@ const handleWindowResize = () => {
 <style scoped>
 /* Game styles */
 .game {
-  width: 80vw; /* 80% of viewport width */
-  height: 80vh; /* 80% of viewport height */
+  width: 80vw; 
+  height: 80vh; 
   border: 4px solid black;
-  margin: auto; /* Center the container horizontally */
-  position: relative; /* Ensure positioning relative to its containing element */
+  margin: auto; 
+  position: relative; 
+  justify-content: center;
+  
 }
 .health-display {
   position: absolute;

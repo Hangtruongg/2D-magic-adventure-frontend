@@ -12,6 +12,8 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@syncfusion/ej2-vue-navigations": "^25.2.4",
+    "mdb-vue-ui-kit": "^5.0.0",
     "vue": "^3.4.21",
     "vue-router": "^4.0.13"
   },

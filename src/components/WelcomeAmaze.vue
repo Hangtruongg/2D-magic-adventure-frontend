@@ -1,6 +1,7 @@
 <script>
 import myImage from  '@/assets/background/waterfall.gif'
 import { onMounted } from 'vue';
+//import { MDBBtn } from 'mdb-vue-ui-kit';
 
 export default {
   name: 'WelcomeAmaze',
@@ -12,6 +13,9 @@ export default {
  methods: {
     navigateToGame() {
       this.$router.push('/game');
+    },
+    toogle () {
+      this.active =!this.active
     }
   }
 };
@@ -22,16 +26,20 @@ onMounted(() => {
 
 </script> <!--end step 1-->
 
+
+
 <template>
   <div class="container">
     <img :src="myImage" alt="halloween background" class="background-img">
     <div class="heading-box">
       <h1 class="heading"> Welcome to A-maze </h1>
       <button class="startButton" @click="navigateToGame">Press to play</button>
-
     </div>
+    <button @click="toogle">About A-maze</button>
+    <div v-if="active"></div>
   </div>
 </template>
+
 
 <style>
 .container {
@@ -94,6 +102,7 @@ onMounted(() => {
   border-radius: 10px; 
   cursor: pointer;
 }
+
 
 
 </style>

@@ -18,7 +18,7 @@
   
   // Props
   const { position } = props;
-  const playerImage = 'src/components/entity images/player.png' // Update the path to your player image
+  const playerImage = 'src/assets/character/preview_trenchcoat_walk.gif' // Update the path to your player image
   </script>
   
   <style scoped>
