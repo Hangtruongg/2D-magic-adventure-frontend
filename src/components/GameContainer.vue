@@ -79,11 +79,13 @@ const movePlayer = (event) => {
 };
 let gameContainer; // Reference to the game container
 
-const monsters = reactive([
+let monsters = reactive([
   { imagePath: 'src/components/entity images/slime.png', position: { x: 400, y: 550 }, health: 55 },
-  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 10 }
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 0 }
   // Add more monsters as needed
 ]);
+
+monsters = monsters.filter(monster => monster.health > 0);
 
 onMounted(() => {
   // component is now mounted.
