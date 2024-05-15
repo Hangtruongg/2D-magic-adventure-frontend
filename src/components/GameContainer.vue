@@ -32,6 +32,26 @@ const playerData = reactive({
   health: 100
 })
 
+const moveMonsters = (monsters, playerData) => {
+  for (let i = 0; i < monsters.length; i++) {
+    if (monsters[i].position.x < playerData.position.x) {
+      monsters[i].position.x += monsters[i].speed;
+    } else if (monsters[i].position.x > playerData.position.x) {
+      monsters[i].position.x -= monsters[i].speed;
+    }
+    if (monsters[i].position.y < playerData.position.y) {
+      monsters[i].position.y += monsters[i].speed;
+    } else if (monsters[i].position.y > playerData.position.y) {
+      monsters[i].position.y -= monsters[i].speed;
+    }
+  }
+}
+
+setInterval(() => {
+  // Call the moveMonsters function with your monsters array and playerData object
+  moveMonsters(monsters, playerData);
+}, 100);
+
 // Function to handle player movement
 const movePlayer = (event) => {
   const speed = 50 // Adjust speed as needed
@@ -75,8 +95,8 @@ const movePlayer = (event) => {
 let gameContainer // Reference to the game container
 
 let monsters = reactive([
-  { imagePath: 'src/components/entity images/slime.png', position: { x: 400, y: 550 }, health: 55 },
-  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 100 }
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 400, y: 550 }, health: 55, speed: 20, damage: 20 },
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 100, speed: 10, damage: 10 }
   // Add more monsters as needed
 ])
 
