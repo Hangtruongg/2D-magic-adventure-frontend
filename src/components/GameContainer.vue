@@ -46,15 +46,20 @@ const playerData = reactive({
 
 const moveMonsters = (monsters, playerData) => {
   for (let i = 0; i < monsters.length; i++) {
-    if (monsters[i].position.x < playerData.position.x) {
+    if (monsters[i].position.x + monsters[i].speed < playerData.position.x) {
       monsters[i].position.x += monsters[i].speed;
-    } else if (monsters[i].position.x > playerData.position.x) {
+    } else if (monsters[i].position.x - monsters[i].speed > playerData.position.x) {
       monsters[i].position.x -= monsters[i].speed;
     }
-    if (monsters[i].position.y < playerData.position.y) {
+    if (monsters[i].position.y + monsters[i].speed < playerData.position.y) {
       monsters[i].position.y += monsters[i].speed;
-    } else if (monsters[i].position.y > playerData.position.y) {
+    } else if (monsters[i].position.y - monsters[i].speed > playerData.position.y) {
       monsters[i].position.y -= monsters[i].speed;
+    }
+
+      //makes monsters do damage if they are within 1 speed distance of the player
+    if (Math.abs(monsters[i].position.x - playerData.position.x) <= monsters[i].speed && Math.abs(monsters[i].position.y - playerData.position.y) <= monsters[i].speed) {
+    playerData.health -= monsters[i].damage;
     }
   }
 }
@@ -107,8 +112,8 @@ const movePlayer = (event) => {
 let gameContainer // Reference to the game container
 
 let monsters = reactive([
-  { imagePath: 'src/components/entity images/slime.png', position: { x: 400, y: 550 }, health: 55, speed: 20, damage: 20 },
-  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 100, speed: 10, damage: 10 }
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 400, y: 550 }, health: 55, speed: 4, damage: 2 },
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 100, speed: 6, damage: 4 }
   // Add more monsters as needed
 ])
 
