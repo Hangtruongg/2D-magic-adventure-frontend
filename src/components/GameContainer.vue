@@ -10,6 +10,7 @@
     <!-- Render the player component -->
     <Player :position="playerData.position" />
 
+
     <!-- <Monster v-for="(monster, index) in monsters" :key="index" :monsterData="monster" :initialPosition="monster.position"/> -->
     <div v-for="(monster, index) in monsters" :key="index">
       <template v-if="monster.health > 0">
@@ -18,13 +19,24 @@
     </div>
 
     <div class="health-display" :style="{ left: `${minX}px` }">Health: {{ playerData.health }}</div>
-  </div>
+    <!-- mapping the container with the tile -->
+    <img :src="GrassTile" alt="grass tile" class="grassTile">
+    
+    
+</div>
 </template>
+
 
 <script setup>
 import { reactive, onMounted, onUnmounted } from 'vue'
 import Player from './Player.vue' // Import the Player component
 import Monster from './Monster.vue'
+//import the Tile 
+import GrassTile from  '@/assets/tiles/house.gif'
+import WaterTile from  '@/assets/tiles/water.jpg'
+import TreeTile from  '@/assets/tiles/tree1.png'
+// import Tiles from './Tiles.vue'
+
 
 // Reactive object to store player position
 const playerData = reactive({
@@ -126,22 +138,33 @@ const handleWindowResize = () => {
   playerData.position.x = Math.min(playerData.position.x, gameRect.width - playerRect.width)
   playerData.position.y = Math.min(playerData.position.y, gameRect.height - playerRect.height)
 }
+
+
 </script>
 
 <!-- Add Player component styles -->
 <style scoped>
 /* Game styles */
 .game {
-  width: 80vw; 
-  height: 80vh; 
+  width: 95vw ;
+  height: 95vh; 
   border: 4px solid black;
   margin: auto; /* Center the container horizontally */
-  position: relative; /* Ensure positioning relative to its containing element */
+   position: relative;/*  Ensure positioning relative to its containing element */
   justify-content: center;
+
+  
 }
 .health-display {
   position: absolute;
   bottom: 0;
   left: 0;
 }
+
+.grassTile {
+  width:100%;
+  height:100%;
+  margin: 0;
+}
+
 </style>
