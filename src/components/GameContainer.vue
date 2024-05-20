@@ -18,6 +18,10 @@
       </template>
     </div>
 
+    <div v-for="(tile, index) in tiles" :key="index">
+        <Tile :tileData="tile"/>
+    </div>
+
     <div class="health-display" :style="{ left: `${minX}px` }">Health: {{ playerData.health }}</div>
     <!-- mapping the container with the tile -->
     <img :src="GrassTile" alt="grass tile" class="grassTile">
@@ -31,10 +35,11 @@
 import { reactive, onMounted, onUnmounted } from 'vue'
 import Player from './Player.vue' // Import the Player component
 import Monster from './Monster.vue'
+import Tile from './Tile.vue'
 //import the Tile 
 import GrassTile from  '@/assets/tiles/house.gif'
-import WaterTile from  '@/assets/tiles/water.jpg'
-import TreeTile from  '@/assets/tiles/tree1.png'
+// import WaterTile from  '@/assets/tiles/water.jpg'
+// import TreeTile from  '@/assets/tiles/tree1.png'
 // import Tiles from './Tiles.vue'
 
 
@@ -118,6 +123,10 @@ let monsters = reactive([
 ])
 
 monsters = monsters.filter((monster) => monster.health > 0)
+
+let tiles = reactive([
+  { imagePath: 'src/assets/tiles/grass.png', position: { x: 100, y: 200}}
+])
 
 onMounted(() => {
   // component is now mounted.

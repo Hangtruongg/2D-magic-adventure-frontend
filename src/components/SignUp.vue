@@ -13,44 +13,44 @@
 </template>
 
 <script>
-import axios from'axios'
+// import axios from'axios'
 
-// import { onMounted } from 'vue';
-export default {
-    name:'SignUp',
-    data()
-    {
-        return {
-            name:'',
-            email:'',
-            password:''
+// // import { onMounted } from 'vue';
+// export default {
+//     name:'SignUp',
+//     data()
+//     {
+//         return {
+//             name:'',
+//             email:'',
+//             password:''
 
-        }
-    },
-    methods:{ // hasn't worked yet
-        async signUp()
-        {
-            let result = await axios.post("http://localhost:3000/users", {
-                email: this.email,
-                password: this.password,
-                name:this.name
-            });
-            console.warn(result);
-            if(result.status==201) {
-                alert("sign up done");
-            }
-        },
+//         }
+//     },
+//     methods:{ // hasn't worked yet
+//         async signUp()
+//         {
+//             let result = await axios.post("http://localhost:3000/users", {
+//                 email: this.email,
+//                 password: this.password,
+//                 name:this.name
+//             });
+//             console.warn(result);
+//             if(result.status==201) {
+//                 alert("sign up done");
+//             }
+//         },
         
-    },
-    mounted()
-    {
-        let user=localStorage.getItem('user-info')
-        if(user) //if the user has signed up, will always come to welcome homepag
-        {
-            this.$router.push('/WelcomeAmaze')
-        }
-    }
-};
+//     },
+//     mounted()
+//     {
+//         let user=localStorage.getItem('user-info')
+//         if(user) //if the user has signed up, will always come to welcome homepag
+//         {
+//             this.$router.push('/WelcomeAmaze')
+//         }
+//     }
+// };
 
 </script>
 
