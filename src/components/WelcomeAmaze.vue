@@ -45,12 +45,33 @@ onMounted(() => {
     </div>
     <p></p>
   <div class="container">
-    <!-- <img :src="myImage" alt="halloween background" class="background-img"> -->
     <div class="heading-box">
       <h1 class="heading"> Welcome to A-maze </h1>
       <button class="startButton" @click="navigateToGame">Press to play</button>
     </div>
   </div>
+  <div>
+    <img src="/src/assets/background/secret.gif" class="page2">
+  </div>
+  <!-- <div class ="parallax">
+    <div class="layer">
+      <img src="/src/assets/background/clear_sky_ebene1.jpg">
+      
+    </div>
+    <div class="layer">
+      <img src="/src/assets/background/clear_sky_ebene2.jpg">
+    </div>
+    <div class="layer">
+      <img src="/src/assets/background/clear_sky_ebene3.jpg">
+    </div>
+    <div class="layer">
+      <img src="/src/assets/background/clear_sky_ebene4.jpg">
+    </div>
+    <div class="layer">
+      <img src="/src/assets/background/clear_sky_ebene5.jpg">
+    </div>
+    <div class="cover"></div>
+  </div> -->
 </template>
 
 
@@ -59,7 +80,7 @@ onMounted(() => {
   margin:0;
   padding:0;
   box-sizing: border-box;
-}
+} 
 .container {
   /* display:flex;
   justify-content: center;
@@ -67,11 +88,16 @@ onMounted(() => {
   height: 100vh; */
   width: 100%;
   min-height: 100vh;
-  background-image: url('/src/assets/background/light_city.gif');
+  background-image: url('/src/assets/background/eyes.gif');
   background-size: cover;
   background-position: center;
   padding: 10px 8%;
   /* transition: transform 400ms; this is how to make the img get zoom in when move the mouse */
+}
+
+.page2 {
+  width:100%;
+
 }
 /* .container:hover {
   transform: scale(1.2);
@@ -91,7 +117,82 @@ body {
   background: #d5bdaf;
   font-family: 'Roboto';
   height: 100%;
+
+  /* height: 100vh;
+  background-color: #fedccb; */
 }
+
+/* .parallax {
+  perspective: 100px;
+  height:100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: absolute;
+  top:0;
+  left:50%;
+  right: 0;
+  bottom: 0;
+  margin-left: -1500px;
+  
+}
+
+.layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+}
+
+img{
+  display: block;
+  position: absolute;
+  bottom: 0;
+}
+
+.cover {
+  height: 1500px;
+  background-color: #e3d5ca;
+  display: block;
+  position: absolute;
+  top: 100%;
+  left:0;
+  right: 0;
+  z-index: 2;
+
+
+}
+
+.layer:nth-of-type(0) {
+  transform: translateZ(-300px)
+  scale(4);
+}
+
+.layer:nth-of-type(1) {
+  transform: translateZ(-250px)
+  scale(3.5);
+}
+.layer:nth-of-type(2) {
+  transform: translateZ(-200px)
+  scale(3);
+}
+.layer:nth-of-type(3) {
+  transform: translateZ(-150px)
+  scale(2.5);
+}
+.layer:nth-of-type(4) {
+  transform: translateZ(-100px)
+  scale(2);
+}
+.layer:nth-of-type(5) {
+  transform: translateZ(-50px)
+  scale(1.5);
+}
+.layer:nth-of-type(6) {
+  transform: translateZ(0px)
+  scale(4);
+} */
 
 #nav-bar {
   background-color: #e3d5ca;
@@ -111,7 +212,7 @@ body {
   cursor: pointer;
   position: relative;
   top: 10px;
-  font-size: 30px;
+  font-size: 25px;
   left: 20px;
   transition: all .5s;
   color: rgb(131, 87, 87); 
@@ -129,7 +230,7 @@ body {
 
 
 .heading-box {
-  background-color: rgba(255,255,255,0.7);
+  background-color: rgba(255, 255, 255, 0);
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
