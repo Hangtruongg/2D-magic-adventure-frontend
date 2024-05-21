@@ -20,7 +20,7 @@ const router = createRouter({
     {path: '/signUp',
       name:'signUp',
       component: SignUp
-    }
+    },
   ]
 })
 export default router // end step 1

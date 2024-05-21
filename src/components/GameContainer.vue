@@ -81,7 +81,7 @@ const movePlayer = (event) => {
   const maxX = gameRect.right
   const minY = gameRect.top
   const maxY = gameRect.bottom
-
+  
   switch (event.key) {
     case 'w':
     case 'W':

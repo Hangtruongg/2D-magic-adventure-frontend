@@ -15,6 +15,9 @@ export default {
     },
     navigateToSignUp() {
       this.$router.push('/signUp')
+    },
+    navigateToGame2() {
+      this.$router.push('/game2')
     }
   },
   
@@ -44,15 +47,17 @@ onMounted(() => {
       <button class="signUpButton" @click="navigateToSignUp">Sign Up</button>
     </div>
     <p></p>
+
   <div class="container">
     <div class="heading-box">
       <h1 class="heading"> Welcome to A-maze </h1>
       <button class="startButton" @click="navigateToGame">Press to play</button>
     </div>
   </div>
-  <div>
-    <img src="/src/assets/background/secret.gif" class="page2">
-  </div>
+
+  <img src="/src/assets/background/secret.gif" class="page2">
+
+  
   <!-- <div class ="parallax">
     <div class="layer">
       <img src="/src/assets/background/clear_sky_ebene1.jpg">
@@ -95,10 +100,6 @@ onMounted(() => {
   /* transition: transform 400ms; this is how to make the img get zoom in when move the mouse */
 }
 
-.page2 {
-  width:100%;
-
-}
 /* .container:hover {
   transform: scale(1.2);
 } the next step to make the img get zoom in  */
@@ -114,7 +115,7 @@ onMounted(() => {
 body {
   margin: 0;
   padding: 0;
-  background: #d5bdaf;
+  background: black;
   font-family: 'Roboto';
   height: 100%;
 
@@ -195,11 +196,11 @@ img{
 } */
 
 #nav-bar {
-  background-color: #e3d5ca;
+  background-color: black;
   height: 50px;
   width: 100%;
   position: relative;
-  top: 20px;
+  top: 10px;
   left: 0;
   border-radius: 30px 30px 5px 5px;
 }
@@ -208,7 +209,7 @@ img{
 #about,
 #new,
 #creative,
-.signUpButton {
+.signUpButton{
   cursor: pointer;
   position: relative;
   top: 10px;
@@ -312,7 +313,5 @@ img{
     box-shadow: 0 3px 0 rgb(226, 186, 224);
 
   }
-
-
 
 </style>
