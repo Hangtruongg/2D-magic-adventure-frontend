@@ -1,7 +1,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
+<!-- v-if="playerData.health > 0" -->
 <template>
   <div
-    v-if="playerData.health > 0"
+    
     class="game"
     tabindex="0"
     @keydown="movePlayer"
@@ -24,7 +25,8 @@
 
     <div class="health-display" :style="{ left: `${minX}px` }">Health: {{ playerData.health }}</div>
     <!-- mapping the container with the tile -->
-    <img :src="GrassTile" alt="grass tile" class="grassTile">
+    
+    
     
     
 </div>
@@ -125,7 +127,13 @@ let monsters = reactive([
 monsters = monsters.filter((monster) => monster.health > 0)
 
 let tiles = reactive([
-  { imagePath: 'src/assets/tiles/grass.png', position: { x: 100, y: 200}}
+{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 0}},
+{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 50}},
+{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 100}},
+{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 650}},
+{ imagePath: 'src/assets/tiles/grass.png', position: { x: 50, y: 0}},
+{ imagePath: 'src/assets/tiles/grass.png', position: { x: 100, y: 200}}
+
 ])
 
 onMounted(() => {
@@ -173,6 +181,7 @@ const handleWindowResize = () => {
   position: absolute;
   bottom: 0;
   left: 0;
+  color:white;
 }
 
 .grassTile {

@@ -16,8 +16,12 @@ export default {
     navigateToSignUp() {
       this.$router.push('/signUp')
     },
-    navigateToGame2() {
-      this.$router.push('/game2')
+    playMusic() {
+      this.playAudio();
+    },
+    playAudio() {
+      const audio = this.$refs.music;
+      audio.play();
     }
   },
   
@@ -27,6 +31,8 @@ export default {
     if(user)
     {
       this.$router.push('/SignUp')
+    } else {
+      this.playAudio();
     }
   }
 };
@@ -34,6 +40,10 @@ onMounted(() => {
   // component is now mounted.
   console.log("WelcomeAmaze mounted");})
 
+
+
+
+// let beat = new Audio('/src/assets/sound/fix suzume instrumental.mp3')
 
 </script> <!--end step 1-->
 
@@ -45,6 +55,8 @@ onMounted(() => {
       <span id="new" onclick="newIcon()" class="material-symbol-outlined">News</span>
       <span id="creative" onclick="creativeIcon()" class="material-symbol-outlined">Creative</span>
       <button class="signUpButton" @click="navigateToSignUp">Sign Up</button>
+      <button class="loginButton" @click="navigateToSignUp">Login</button>
+      <!-- <button class="playMusic" @click="playMusic">Play Music</button> -->
     </div>
     <p></p>
 
@@ -57,6 +69,7 @@ onMounted(() => {
 
   <img src="/src/assets/background/secret.gif" class="page2">
 
+  <audio ref="music" src="/src/assets/sound/fix suzume instrumental.mp3" loop ></audio>
   
   <!-- <div class ="parallax">
     <div class="layer">
@@ -196,7 +209,7 @@ img{
 } */
 
 #nav-bar {
-  background-color: #5c5594;
+  background-color: black;
   height: 50px;
   width: 100%;
   position: relative;
@@ -209,7 +222,8 @@ img{
 #about,
 #new,
 #creative,
-.signUpButton{
+.signUpButton,
+.loginButton{
   cursor: pointer;
   position: relative;
   top: 10px;
@@ -313,5 +327,28 @@ img{
     box-shadow: 0 3px 0 rgb(226, 186, 224);
 
   }
+
+.loginButton {
+  cursor: pointer;
+  border: 0;
+  color:black;
+  padding: 10px 25px;
+  background:rgb(233, 169, 222);
+  border-radius: 6px;
+  font: 600 20px 'monterrat';
+  box-shadow: 0 6px 0 rgb(184, 117, 184);
+  transition: .3s;
+  left: 920px;
+  top: 0;
+}
+  .loginButton:active {
+    transform: translateY(5px);
+    box-shadow: 0 3px 0 rgb(226, 186, 224);
+
+  }
+
+.page2 {
+  width: 100%;
+}
 
 </style>
