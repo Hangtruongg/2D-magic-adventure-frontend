@@ -196,7 +196,7 @@ img{
 } */
 
 #nav-bar {
-  background-color: black;
+  background-color: #5c5594;
   height: 50px;
   width: 100%;
   position: relative;
