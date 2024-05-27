@@ -22,19 +22,8 @@
       </template>
     </div>
 
-    <div v-for="(tile, index) in tiles" :key="index">
-        <Tile :tileData="tile"/>
-    </div>
-
-    <div class="health-display" :style="{ left: `${minX}px` }">Health: {{ playerData.health }}</div>
-    <!-- mapping the container with the tile -->
-    
-    <div>
-      <canvas id="canvas1" class="canvas1" width="200" height="200"></canvas>
-    </div>
-    
-    
-</div>
+    <div class="health-display">Health: {{ playerData.health }}</div>
+  </div>
 </template>
 
 <script setup>
@@ -164,14 +153,14 @@ let monsters = reactive([
 monsters = monsters.filter((monster) => monster.health > 0);
 
 let tiles = reactive([
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 0}},
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 50}},
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 100}},
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 650}},
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 50, y: 0}},
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 100, y: 200}}
-
-])
+  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 0}, collision: false },
+  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 50}, collision: false },
+  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 100}, collision: false },
+  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 650}, collision: false },
+  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 50, y: 0}, collision: false },
+  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 500, y: 100}, collision: false },
+  { imagePath: 'src/assets/tiles/tree1.png', position: { x: 500, y: 100}, collision: true }
+]);
 
 onMounted(() => {
   gameContainer = document.querySelector('.game');
@@ -208,10 +197,11 @@ const handleWindowResize = () => {
   left: 0;
   color: white;
 }
-
 .grassTile {
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
   margin: 0;
 }
 </style>
+
+

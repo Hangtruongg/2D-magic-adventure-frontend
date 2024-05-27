@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <img
-    :src="playerImage1"
+    :src="playerImageSrc"
     :style="{ left: position.x + 'px', top: position.y + 'px', position: 'absolute' }"
     alt="Player"
     class="player-image"
@@ -9,21 +9,70 @@
 </template>
 
 <script setup > 
-import { defineProps, onMounted } from 'vue' // Import defineProps helper
+import { defineProps,ref, onMounted, onUnmounted } from 'vue' // Import defineProps helper
 
 // Define props
 const props = defineProps({
-  position: Object // Define the position prop
+  position: Object, // Define the position prop
+  direction: String // track direction
 })
 
 
-
 // Props
-// const { position } = props
-const playerImageSrc = '/src/assets/character/george.png'
-const playerImage1 = '/src/assets/character/george1.png'
+const { position } = props
+const playerImageSrc = ref( '/src/assets/character/George_down.png')
 
+const playerImages = {
+  up: '/src/assets/character/George_up.png',
+  down: '/src/assets/character/George_down.png',
+  left: '/src/assets/character/George_left.png',
+  right: '/src/assets/character/George_right.png',
+}
+
+//Function to switch the player image based on the direction
+const switschSprite = (direction) => {
+  playerImageSrc.value = playerImages[direction] || playerImages.down
+}
+
+
+// watch for direction changes
+import {watch} from 'vue'
+watch(() => props.direction, (newDirection) => {
+  switschSprite(newDirection)
+})
+
+
+//Handle keydown events
+const handleKeyDown = (event) => {
+  switch (event.key) {
+    case 'w':
+      case 'W':
+        switschSprite('up')
+        break
+    case 's':
+      case'S':
+      switschSprite('down')
+      break
+    case 'a':
+      case'A':
+      switschSprite('left')
+      break
+    case 'd':
+      case 'D':
+      switschSprite('right')
+        break
+  }
+}
+
+// Add event listener on mounted and remove on unmounted
 onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown)
+})
+
+onUnmounted(() => {
+  window.addEventListenerr('keydown', handleKeyDown)
+})
+/*  onMounted(() => {
 
   const canvas = document.getElementById('canvas1');
   const ctx = canvas.getContext('2d');
@@ -37,9 +86,9 @@ onMounted(() => {
   let frameX = 0; //horizontally
   let frameY = 0; //vertically
   let gameFrame = 0;
-  const staggerFrames = 8; // affected to the speed of changing frame, fix with frame <3
+  const staggerFrames = 8; // affected to the speed of changing frame, fix with frame <3 (need this) */
 
-  function animate() {
+  /*function animate() {
     ctx.clearRect(0,0,CANVAS_WIDTH, CANVAS_HEIGHT);
     // let position = Math.floor(gameFrame/staggerFrames) % 3;
     // ctx.fillRect(100,50,100,100);
@@ -54,7 +103,7 @@ onMounted(() => {
     gameFrame++;
     requestAnimationFrame(animate);
   };
-  animate();
+  animate();(need this)*/
 
   // const spriteWidth = 50;
   // const spriteHeight = 50;
@@ -83,19 +132,30 @@ onMounted(() => {
   // playerImage.onload = () => {
   //   animate();
   // };
-})
+//})
 
 </script>
 
 <style scoped>
 /* Player styles */
 /* You can add additional styles for the player image if needed */
-.player-image {
+
+.Character {
   width: 50px;
   height: 50px;
+  background: red;
+  overflow: hidden;
+
 }
+
+/* .player-image {
+  width: 50px;
+  height: 50px;
+  background: red;
+  overflow: hidden;
+} */
 
 canvas {
   position: absolute;
 }
-</style>
+</style>*/
