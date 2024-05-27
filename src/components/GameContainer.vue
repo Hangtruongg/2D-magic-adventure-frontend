@@ -26,7 +26,9 @@
     <div class="health-display" :style="{ left: `${minX}px` }">Health: {{ playerData.health }}</div>
     <!-- mapping the container with the tile -->
     
-    
+    <div>
+      <canvas id="canvas1" class="canvas1" width="200" height="200"></canvas>
+    </div>
     
     
 </div>
@@ -39,10 +41,6 @@ import Player from './Player.vue' // Import the Player component
 import Monster from './Monster.vue'
 import Tile from './Tile.vue'
 //import the Tile 
-import GrassTile from  '@/assets/tiles/house.gif'
-// import WaterTile from  '@/assets/tiles/water.jpg'
-// import TreeTile from  '@/assets/tiles/tree1.png'
-// import Tiles from './Tiles.vue'
 
 
 // Reactive object to store player position
@@ -127,12 +125,7 @@ let monsters = reactive([
 monsters = monsters.filter((monster) => monster.health > 0)
 
 let tiles = reactive([
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 0}},
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 50}},
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 100}},
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 650}},
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 50, y: 0}},
-{ imagePath: 'src/assets/tiles/grass.png', position: { x: 100, y: 200}}
+{ imagePath: 'src/assets/tiles/brown_earth.png', position: { x: 0, y: 0}},
 
 ])
 
@@ -184,10 +177,17 @@ const handleWindowResize = () => {
   color:white;
 }
 
-.grassTile {
-  width:100%;
-  height:100%;
-  margin: 0;
-}
 
+</style>
+
+<style>
+.canvas1 {
+  color: 5px solid white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+}
 </style>
