@@ -13,7 +13,7 @@
     </div>
 
     <!-- Render the player component -->
-    <Player :position="playerData.position" />
+    <Player :position="playerData.position" :checkCollision="isCollision"/>
 
     <!-- Render the monsters -->
     <div v-for="(monster, index) in monsters" :key="index">
@@ -27,10 +27,30 @@
 </template>
 
 <script setup>
-import { reactive, onMounted, onUnmounted } from 'vue';
+import { reactive, onMounted, onUnmounted, ref } from 'vue';
 import Player from './Player.vue';
 import Monster from './Monster.vue';
 import Tile from './Tile.vue';
+import levelData from './levelData.json';
+
+let gameContainer = null;
+let gameRect = null;
+
+onMounted(() => {
+  gameContainer = document.querySelector('.game');
+  updateGameRect();
+  window.addEventListener('resize', handleWindowResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleWindowResize);
+});
+
+const updateGameRect = () => {
+  if (gameContainer) {
+    gameRect = gameContainer.getBoundingClientRect();
+  }
+};
 
 // Reactive object to store player position
 const playerData = reactive({
@@ -38,9 +58,22 @@ const playerData = reactive({
   health: 100
 });
 
+let tiles = ref( levelData.tiles )
+
+const currentTick = ref(0);
+
 const isCollision = (newX, newY, entityWidth, entityHeight) => {
   // Check if the new position intersects with any collidable tile
-  return tiles.some(tile => {
+  if (!gameRect) return true;
+
+  const containerRight = gameRect.right - entityWidth*2;
+  const containerBottom = gameRect.bottom - entityHeight;
+
+  if (newX < 0 || newX > containerRight || newY < 0 || newY > containerBottom) {
+    return true;
+  }
+
+  return tiles.value.some(tile => {
     if (!tile.collision) return false;
 
     const tileX = tile.position.x;
@@ -59,120 +92,66 @@ const isCollision = (newX, newY, entityWidth, entityHeight) => {
 
 const moveMonsters = (monsters, playerData) => {
   for (let i = 0; i < monsters.length; i++) {
-    let newX = monsters[i].position.x;
-    let newY = monsters[i].position.y;
+    let x = monsters[i].position.x;
+    let y = monsters[i].position.y;
+    let monsterSpeed = monsters[i].speed;
+    let playerPositionX = playerData.position.x;
+    let playerPositionY = playerData.position.y;
 
-    if (monsters[i].position.x + monsters[i].speed < playerData.position.x) {
-      newX += monsters[i].speed;
-    } else if (monsters[i].position.x - monsters[i].speed > playerData.position.x) {
-      newX -= monsters[i].speed;
+    if (x + monsterSpeed < playerPositionX) {
+      x += monsterSpeed;
+    } else if (x - monsterSpeed > playerPositionX) {
+      x -= monsterSpeed;
     }
-    if (monsters[i].position.y + monsters[i].speed < playerData.position.y) {
-      newY += monsters[i].speed;
-    } else if (monsters[i].position.y - monsters[i].speed > playerData.position.y) {
-      newY -= monsters[i].speed;
+    if (y + monsterSpeed < playerPositionY) {
+      y += monsterSpeed;
+    } else if (y - monsterSpeed > playerPositionY) {
+      y -= monsterSpeed;
     }
 
     const monsterWidth = 50;  // Assuming monster width is 50
     const monsterHeight = 50; // Assuming monster height is 50
 
-    if (!isCollision(newX, newY, monsterWidth, monsterHeight)) {
-      monsters[i].position.x = newX;
-      monsters[i].position.y = newY;
+    if (!isCollision(x, y, monsterWidth, monsterHeight)) {
+      monsters[i].position.x = x;
+      monsters[i].position.y = y;
     }
 
-    if (Math.abs(monsters[i].position.x - playerData.position.x) <= monsters[i].speed &&
-        Math.abs(monsters[i].position.y - playerData.position.y) <= monsters[i].speed) {
-      playerData.health -= monsters[i].damage;
-    }
+    monsterAttackMelee(monsters[i], playerData)
   }
-};
+}
+
+const monsterAttackMelee = (monster, playerData) => {
+  if (Math.abs(monster.position.x - playerData.position.x) <= monster.speed &&
+        Math.abs(monster.position.y - playerData.position.y) <= monster.speed &&
+        monster.lastAttack + monster.attackSpeed < currentTick.value) {
+        playerData.health -= monster.damage;
+        monster.lastAttack = currentTick.value;
+    }
+}
 
 
 setInterval(() => {
+  currentTick.value++;
   moveMonsters(monsters, playerData);
 }, 100);
 
-// Function to handle player movement
-const movePlayer = (event) => {
-  const speed = 50; 
-  const gameContainer = document.querySelector('.game');
-  const gameRect = gameContainer.getBoundingClientRect();
-  const playerElement = document.querySelector('.player-image');
-  const playerRect = playerElement.getBoundingClientRect();
-
-  const containerLeft = gameRect.left;
-  const containerRight = gameRect.right - playerRect.width;
-  const containerTop = gameRect.top;
-  const containerBottom = gameRect.bottom - playerRect.height;
-
-  let newX = playerData.position.x;
-  let newY = playerData.position.y;
-
-  switch (event.key) {
-    case 'w':
-    case 'W':
-      newY -= speed;
-      break;
-    case 's':
-    case 'S':
-      newY += speed;
-      break;
-    case 'a':
-    case 'A':
-      newX -= speed;
-      break;
-    case 'd':
-    case 'D':
-      newX += speed;
-      break;
-  }
-
-  const playerWidth = 50;  // Assuming player width is 50
-  const playerHeight = 50; // Assuming player height is 50
-
-  if (
-    newX >= 0 && newX <= containerRight &&
-    newY >= 0 && newY <= containerBottom &&
-    !isCollision(newX, newY, playerWidth, playerHeight)
-  ) {
-    playerData.position.x = newX;
-    playerData.position.y = newY;
-  }
-};
-
-
-let gameContainer; // Reference to the game container
-
 let monsters = reactive([
-  { imagePath: 'src/components/entity images/slime.png', position: { x: 400, y: 550 }, health: 55, speed: 4, damage: 2 },
-  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 100, speed: 6, damage: 4 }
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 400, y: 550 }, health: 55, speed: 4, damage: 2, attackSpeed: 3, lastAttack: 0, monsterType: "melee" },
+  { imagePath: 'src/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 100, speed: 6, damage: 4, attackSpeed: 5, lastAttack: 0, monsterType: "ranged" }
   // Add more monsters as needed
 ]);
 
 monsters = monsters.filter((monster) => monster.health > 0);
 
-let tiles = reactive([
-  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 0}, collision: false },
-  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 50}, collision: false },
-  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 100}, collision: false },
-  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 0, y: 650}, collision: false },
-  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 50, y: 0}, collision: false },
-  // { imagePath: 'src/assets/tiles/grass.png', position: { x: 500, y: 100}, collision: false },
-  { imagePath: 'src/assets/tiles/tree1.png', position: { x: 500, y: 100}, collision: true }
-]);
-
-onMounted(() => {
-  gameContainer = document.querySelector('.game');
-  window.addEventListener('resize', handleWindowResize);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('resize', handleWindowResize);
-});
-
 const handleWindowResize = () => {
-  const gameRect = gameContainer.getBoundingClientRect();
+  updateGameRect();
+  adjustPlayerPosition();
+};
+
+const adjustPlayerPosition = () => {
+  if (!gameRect) return;
+
   const playerElement = document.querySelector('.player-image');
   const playerRect = playerElement.getBoundingClientRect();
 

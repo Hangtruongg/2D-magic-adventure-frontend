@@ -14,7 +14,8 @@ import { defineProps,ref, onMounted, onUnmounted } from 'vue' // Import definePr
 // Define props
 const props = defineProps({
   position: Object, // Define the position prop
-  direction: String // track direction
+  direction: String, // track direction
+  checkCollision: Function,
 })
 
 
@@ -44,23 +45,38 @@ watch(() => props.direction, (newDirection) => {
 
 //Handle keydown events
 const handleKeyDown = (event) => {
+  const speed = 50;
+  // const containerRight = gameContainer().right;
+  // const containerBottom = props.gameContainer.bottom;
+
+  let newX = position.x;
+  let newY = position.y;
+
   switch (event.key) {
     case 'w':
-      case 'W':
-        switschSprite('up')
-        break
+    case 'W':
+    switschSprite('up')
+    newY -= speed;
+    break
     case 's':
-      case'S':
-      switschSprite('down')
-      break
+    case'S':
+    switschSprite('down')
+    newY += speed;
+    break
     case 'a':
-      case'A':
-      switschSprite('left')
-      break
+    case'A':
+    switschSprite('left')
+    newX -= speed;
+    break
     case 'd':
-      case 'D':
-      switschSprite('right')
-        break
+    case 'D':
+    switschSprite('right')
+    newX += speed;
+    break;
+  }
+  if(!props.checkCollision(newX, newY, 50, 50)) {
+    position.x = newX;
+    position.y = newY;
   }
 }
 
@@ -72,6 +88,44 @@ onMounted(() => {
 onUnmounted(() => {
   window.addEventListenerr('keydown', handleKeyDown)
 })
+
+// methods: {
+//     move(KeyboardEvent) {
+
+//       switch (event.key) {
+//         case 'w':
+//         case 'W':
+//           newY -= speed;
+//           break;
+//         case 's':
+//         case 'S':
+//           newY += speed;
+//           break;
+//         case 'a':
+//         case 'A':
+//           newX -= speed;
+//           break;
+//         case 'd':
+//         case 'D':
+//           newX += speed;
+//           break;
+//       }
+
+//       const playerWidth = 50;
+//       const playerHeight = 50;
+
+//       if (
+//         newX >= 0 && newX <= containerRight &&
+//         newY >= 0 && newY <= containerBottom &&
+//         !this.isCollision(newX, newY, playerWidth, playerHeight)
+//       ) {
+//         this.$emit('update:position', { x: newX, y: newY });
+//       }
+//     },
+//     isCollision(newX, newY, entityWidth, entityHeight) {
+//       // Check for collision logic here
+//     }
+//   }
 /*  onMounted(() => {
 
   const canvas = document.getElementById('canvas1');
