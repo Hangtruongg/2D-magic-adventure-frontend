@@ -39,6 +39,7 @@ let gameRect = null;
 onMounted(() => {
   gameContainer = document.querySelector('.game');
   updateGameRect();
+  loadTiles();
   window.addEventListener('resize', handleWindowResize);
 });
 
@@ -58,7 +59,25 @@ const playerData = reactive({
   health: 100
 });
 
-let tiles = ref( levelData.tiles )
+const loadTiles = () => {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+  const endpoint = baseUrl + '/levelData?level=levelData1.json';
+  const requestOptions = {
+    method: 'GET'
+  };
+  
+  fetch(endpoint, requestOptions)
+    .then(response => response.json())
+    .then(data => {
+      tiles.value = data.tiles;
+    })
+    .catch(error => {
+      console.error('Error fetching level data:', error);
+    });
+};
+
+// let tiles = ref( levelData.tiles )
+const tiles = ref([]);
 
 const currentTick = ref(0);
 
@@ -118,6 +137,7 @@ const moveMonsters = (monsters, playerData) => {
     }
 
     monsterAttackMelee(monsters[i], playerData)
+
   }
 }
 

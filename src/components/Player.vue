@@ -89,43 +89,6 @@ onUnmounted(() => {
   window.addEventListenerr('keydown', handleKeyDown)
 })
 
-// methods: {
-//     move(KeyboardEvent) {
-
-//       switch (event.key) {
-//         case 'w':
-//         case 'W':
-//           newY -= speed;
-//           break;
-//         case 's':
-//         case 'S':
-//           newY += speed;
-//           break;
-//         case 'a':
-//         case 'A':
-//           newX -= speed;
-//           break;
-//         case 'd':
-//         case 'D':
-//           newX += speed;
-//           break;
-//       }
-
-//       const playerWidth = 50;
-//       const playerHeight = 50;
-
-//       if (
-//         newX >= 0 && newX <= containerRight &&
-//         newY >= 0 && newY <= containerBottom &&
-//         !this.isCollision(newX, newY, playerWidth, playerHeight)
-//       ) {
-//         this.$emit('update:position', { x: newX, y: newY });
-//       }
-//     },
-//     isCollision(newX, newY, entityWidth, entityHeight) {
-//       // Check for collision logic here
-//     }
-//   }
 /*  onMounted(() => {
 
   const canvas = document.getElementById('canvas1');
