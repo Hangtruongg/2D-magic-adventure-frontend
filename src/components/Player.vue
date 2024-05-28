@@ -45,7 +45,7 @@ watch(() => props.direction, (newDirection) => {
 
 //Handle keydown events
 const handleKeyDown = (event) => {
-  const speed = 50;
+  const speed = 10;
   // const containerRight = gameContainer().right;
   // const containerBottom = props.gameContainer.bottom;
 
@@ -202,12 +202,11 @@ onUnmounted(() => {
 
 }
 
-/* .player-image {
-  width: 50px;
-  height: 50px;
-  background: red;
+.player-image {
+  width: 40px;
+  height: 40px;
   overflow: hidden;
-} */
+}
 
 canvas {
   position: absolute;

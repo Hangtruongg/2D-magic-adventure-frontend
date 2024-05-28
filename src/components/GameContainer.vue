@@ -54,7 +54,7 @@ const updateGameRect = () => {
 
 // Reactive object to store player position
 const playerData = reactive({
-  position: { x: 0, y: 0 },
+  position: { x: 0, y: 160 },
   health: 100
 });
 
@@ -163,8 +163,8 @@ const adjustPlayerPosition = () => {
 <style scoped>
 /* Game styles */
 .game {
-  width: 95vw;
-  height: 95vh;
+  width: 98vw;
+  height: 98vh;
   border: 4px solid black;
   margin: auto; /* Center the container horizontally */
   position: relative; /* Ensure positioning relative to its containing element */
@@ -181,6 +181,7 @@ const adjustPlayerPosition = () => {
   height: 100%;
   margin: 0;
 }
+
 </style>
 
 
