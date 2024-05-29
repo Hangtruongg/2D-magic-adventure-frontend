@@ -23,12 +23,19 @@ const props = defineProps({
 const { position } = props
 const playerImageSrc = ref( '/src/assets/character/George_down.png')
 
-const playerImages = {
-  up: '/src/assets/character/George_up.png',
-  down: '/src/assets/character/George_down.png',
-  left: '/src/assets/character/George_left.png',
-  right: '/src/assets/character/George_right.png',
+const imagesContext = import.meta.glob('@/assets/character/*.png');
+const images = {};
+for (const path in imagesContext) {
+  const fileName = path.split('/').pop();
+  images[fileName] = imagesContext[path];
 }
+
+const playerImages = {
+  up: images['George_up.png'],
+  down: images['George_down.png'],
+  left: images['George_left.png'],
+  right: images['George_right.png'],
+};
 
 //Function to switch the player image based on the direction
 const switschSprite = (direction) => {
