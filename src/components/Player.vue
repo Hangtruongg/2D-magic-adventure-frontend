@@ -10,7 +10,7 @@
 
 <script setup > 
 import { defineProps,ref, onMounted, onUnmounted } from 'vue' // Import defineProps helper
-import George_up from '@/assets/character/George_up.png'
+// import George_up from '@/assets/character/George_up.png'
 
 // Define props
 const props = defineProps({
@@ -25,10 +25,10 @@ const { position } = props
 const playerImageSrc = ref( '/src/assets/character/George_down.png')
 
 const playerImages = {
-  up: George_up,
-  down: '/src/assets/character/George_down.png',
-  left: '/src/assets/character/George_left.png',
-  right: '/src/assets/character/George_right.png',
+  up: '/assets/character/George_up.png',
+  down: '/assets/character/George_down.png',
+  left: '/assets/character/George_left.png',
+  right: '/assets/character/George_right.png',
 }
 
 //Function to switch the player image based on the direction
