@@ -157,8 +157,8 @@ setInterval(() => {
 }, 100);
 
 let monsters = reactive([
-  { imagePath: '/components/entity images/slime.png', position: { x: 400, y: 550 }, health: 55, speed: 4, damage: 2, attackSpeed: 3, lastAttack: 0, monsterType: "melee" },
-  { imagePath: '/components/entity images/slime.png', position: { x: 200, y: 200 }, health: 100, speed: 6, damage: 4, attackSpeed: 5, lastAttack: 0, monsterType: "ranged" }
+  { imagePath: '/assets/entity images/slime.png', position: { x: 400, y: 550 }, health: 55, speed: 4, damage: 2, attackSpeed: 3, lastAttack: 0, monsterType: "melee" },
+  { imagePath: '/assets/entity images/slime.png', position: { x: 200, y: 200 }, health: 100, speed: 6, damage: 4, attackSpeed: 5, lastAttack: 0, monsterType: "ranged" }
   // Add more monsters as needed
 ]);
 
