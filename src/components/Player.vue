@@ -10,6 +10,7 @@
 
 <script setup > 
 import { defineProps,ref, onMounted, onUnmounted } from 'vue' // Import defineProps helper
+import George_up from '@/assets/character/George_up.png'
 
 // Define props
 const props = defineProps({
@@ -23,19 +24,12 @@ const props = defineProps({
 const { position } = props
 const playerImageSrc = ref( '/src/assets/character/George_down.png')
 
-const imagesContext = import.meta.glob('@/assets/character/*.png');
-const images = {};
-for (const path in imagesContext) {
-  const fileName = path.split('/').pop();
-  images[fileName] = imagesContext[path];
-}
-
 const playerImages = {
-  up: images['George_up.png'],
-  down: images['George_down.png'],
-  left: images['George_left.png'],
-  right: images['George_right.png'],
-};
+  up: George_up,
+  down: '/src/assets/character/George_down.png',
+  left: '/src/assets/character/George_left.png',
+  right: '/src/assets/character/George_right.png',
+}
 
 //Function to switch the player image based on the direction
 const switschSprite = (direction) => {
@@ -172,11 +166,12 @@ onUnmounted(() => {
 
 }
 
-.player-image {
-  width: 40px;
-  height: 40px;
+/* .player-image {
+  width: 50px;
+  height: 50px;
+  background: red;
   overflow: hidden;
-}
+} */
 
 canvas {
   position: absolute;

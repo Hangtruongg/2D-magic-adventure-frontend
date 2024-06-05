@@ -31,7 +31,7 @@ import { reactive, onMounted, onUnmounted, ref } from 'vue';
 import Player from './Player.vue';
 import Monster from './Monster.vue';
 import Tile from './Tile.vue';
-import levelData from './levelData.json';
+// import levelData from './levelData.json';
 
 let gameContainer = null;
 let gameRect = null;
