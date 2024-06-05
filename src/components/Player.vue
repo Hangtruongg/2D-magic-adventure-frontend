@@ -22,7 +22,7 @@ const props = defineProps({
 
 // Props
 const { position } = props
-const playerImageSrc = ref( '/src/assets/character/George_down.png')
+const playerImageSrc = ref( '/assets/character/George_down.png')
 
 const playerImages = {
   up: '/assets/character/George_up.png',
