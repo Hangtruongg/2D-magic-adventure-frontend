@@ -23,6 +23,8 @@
     </div>
 
     <div class="health-display">Health: {{ playerData.health }}</div>
+
+    <div class="camera"></div>
   </div>
 </template>
 
@@ -46,6 +48,10 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize);
 });
+
+//establish camera topdown
+const camera = document.querySelector('.viewPoint')
+
 
 const updateGameRect = () => {
   if (gameContainer) {
@@ -200,6 +206,27 @@ const adjustPlayerPosition = () => {
   width: 100%;
   height: 100%;
   margin: 0;
+}
+:root{
+  --pixel-size: 2px;
+  --grid-cell: calc(var(--pixel-size) * 16);
+}
+@media(min-width: 700px) {
+  :root {
+    --pixel-size: 3px;
+  }
+}
+@media( min-width: 900px ) {
+  :root {
+    --pixel-size: 4px;
+  }
+}
+.camera {
+  width: calc(var(--pixel-size) * 160);
+  height: calc(var(--pixel-size) * 144);
+  overflow: hidden;
+  background: #61ddf7;
+  position: relative;
 }
 
 </style>
