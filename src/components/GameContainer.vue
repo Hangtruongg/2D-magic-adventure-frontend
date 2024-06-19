@@ -61,7 +61,7 @@ const updateGameRect = () => {
 
 // Reactive object to store player position
 const playerData = reactive({
-  position: { x: 0, y: 160 },
+  position: { x: 900, y: 160 },
   health: 100
 });
 

@@ -13,44 +13,36 @@
 </template>
 
 <script>
-// import axios from'axios'
+import axios from 'axios';
 
-// // import { onMounted } from 'vue';
-// export default {
-//     name:'SignUp',
-//     data()
-//     {
-//         return {
-//             name:'',
-//             email:'',
-//             password:''
+// set up for the datenbank verbindung but not work yet
+export default {
+    data() {
+        return {
+            name: '',
+            email: '',
+            password: ''
+        };
+    },
+    methods: {
+        async signUp() {
+            try {
+                await axios.post('http://localhost:8080/api/signups', {
+                    username: this.name,
+                    email: this.email,
+                    password: this.password
+                });
+                alert('Sign-up successful!');
+                // Handle successful sign-up (e.g., redirect to another page)
+            } catch (error) {
+                console.error('There was an error signing up!', error);
+                alert('Sign-up failed!');
+                // Handle sign-up error
+            }
+        }
+    }
+};
 
-//         }
-//     },
-//     methods:{ // hasn't worked yet
-//         async signUp()
-//         {
-//             let result = await axios.post("http://localhost:3000/users", {
-//                 email: this.email,
-//                 password: this.password,
-//                 name:this.name
-//             });
-//             console.warn(result);
-//             if(result.status==201) {
-//                 alert("sign up done");
-//             }
-//         },
-        
-//     },
-//     mounted()
-//     {
-//         let user=localStorage.getItem('user-info')
-//         if(user) //if the user has signed up, will always come to welcome homepag
-//         {
-//             this.$router.push('/WelcomeAmaze')
-//         }
-//     }
-// };
 
 </script>
 

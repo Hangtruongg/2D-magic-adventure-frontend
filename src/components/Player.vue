@@ -158,9 +158,13 @@ onUnmounted(() => {
 /* Player styles */
 /* You can add additional styles for the player image if needed */
 
+.player-image {
+  width: 45px;
+  height: 45px;
+}
 .Character {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   background: red;
   overflow: hidden;
 

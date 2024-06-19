@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import GameContainer from '@/components/GameContainer.vue'
 import WelcomeAmaze from '@/components/WelcomeAmaze.vue';
 import SignUp from '@/components/SignUp.vue'
+import Register from '@/components/Register.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -20,6 +21,10 @@ const router = createRouter({
     {path: '/signUp',
       name:'signUp',
       component: SignUp
+    },
+    {path: '/register',
+      name: 'register',
+      component: Register
     },
   ]
 })

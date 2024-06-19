@@ -4,24 +4,30 @@ import { onMounted } from 'vue';
 
 export default {
   name: 'WelcomeAmaze',
-  // data() {
-  //   return {
-  //     myImage:myImage,
-  //   }
-  // },
+  data() {
+    return {
+      isDropdownOpen: false,
+    };
+  },
  methods: {
+    playMusic() {
+      this.playAudio();
+    },
     navigateToGame() {
       this.$router.push('/game');
     },
     navigateToSignUp() {
-      this.$router.push('/signUp')
+      this.$router.push('/signUp');
     },
-    playMusic() {
-      this.playAudio();
+    navigateToRegister() {
+      this.$router.push('/register');
     },
     playAudio() {
       const audio = this.$refs.music;
       audio.play();
+    },
+    toogleDropdown(status) {
+      this.isDropdownOpen = status;
     }
   },
   
@@ -55,7 +61,7 @@ onMounted(() => {
       <span id="new" onclick="newIcon()" class="material-symbol-outlined">News</span>
       <span id="creative" onclick="creativeIcon()" class="material-symbol-outlined">Creative</span>
       <button class="signUpButton" @click="navigateToSignUp">Sign Up</button>
-      <button class="loginButton" @click="navigateToSignUp">Login</button>
+      <button class="loginButton" @click="navigateToRegister">Login</button>
       <!-- <button class="playMusic" @click="playMusic">Play Music</button> -->
     </div>
     <p></p>
@@ -244,6 +250,7 @@ img{
 }
 
 
+
 .heading-box {
   background-color: rgba(255, 255, 255, 0);
   padding: 20px;
@@ -338,7 +345,7 @@ img{
   font: 600 20px 'monterrat';
   box-shadow: 0 6px 0 rgb(184, 117, 184);
   transition: .3s;
-  left: 920px;
+  left: 930px;
   top: 0;
 }
   .loginButton:active {
