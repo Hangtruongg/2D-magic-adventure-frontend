@@ -3,12 +3,12 @@
     <div class="container" id="container">
         
         <div class="form-container register-container">
-            <form action="#">
+            <form @submit.prevent="register">
                 <h1>Register here</h1>
-                <input type="text" placeholder="Name">
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
-                <button>Register</button>
+                <input type="name" v-model="registerData.name" placeholder="Name" required>
+                <input type="email" v-model="registerData.email" placeholder="Email" required>
+                <input type="password" v-model="registerData.password" placeholder="Password" required>
+                <button type="submit">Register</button>
                 <span>or use your account</span>
                 <div class="social-container">
                     <a href="#" class="social">
@@ -25,10 +25,10 @@
         </div>
 
         <div class="form-container login-container" >
-            <form action="#">
+            <form @submit.prevent="login">
                 <h1>Login here</h1>
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
+                <input type="email" placeholder="Email" v-model="loginData.email" required />
+                <input type="password" placeholder="Password" v-model="loginData.password" required />
                 <div class="content">
                     <div class="checkbox">
                         <input type="checkbox" name="Checkbox" id="checkbox">
@@ -38,7 +38,7 @@
                         <a href="#">Forgot password?</a>
                     </div>
                 </div>
-                <button>Login</button>
+                <button type="submit">Login</button>
                 <span>or use your account</span>
                 <div class="social-container">
                     <a href="#" class="social">
@@ -79,6 +79,7 @@
 </template>
 
 <script >
+import axios from 'axios';
 
 // const registerButton= document.getElementById("register");
 // const loginButton = document.getElementById("login");
@@ -93,6 +94,55 @@
 // });
 
 export default {
+
+    data() {
+        return {
+        isLogin: true,
+        loginData: {
+            email: '',
+            password: ''
+        },
+        registerData: {
+            name: '',
+            email: '',
+            password: ''
+        }
+        };
+    },
+    methods: {
+        switchToRegister() {
+        this.isLogin = false;
+        },
+        switchToLogin() {
+        this.isLogin = true;
+        },
+        async register() {
+                console.log("hello from register")
+                const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
+                try {
+                    await axios.post(baseURL + '/api/v1/auth/register', this.registerData);
+                    alert('Sign-up successful!');
+                    // Handle successful sign-up (e.g., redirect to another page)
+                } catch (error) {
+                    console.error('There was an error signing up!', error);
+                    alert('Sign-up failed!');
+                    // Handle sign-up error
+                }
+            },
+            async login() {
+                console.log("hello from login")
+                const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
+                try {
+                    await axios.post(baseURL + '/api/v1/auth/authenticate', this.loginData);
+                    alert('Sign-up successful!');
+                    // Handle successful sign-up (e.g., redirect to another page)
+                } catch (error) {
+                    console.error('There was an error signing up!', error);
+                    alert('Sign-up failed!');
+                    // Handle sign-up error
+                }
+            },
+    },
     name: 'AuthContainer',
     mounted() {
         const registerButton = document.getElementById("register");

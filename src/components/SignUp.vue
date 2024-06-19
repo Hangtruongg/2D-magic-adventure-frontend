@@ -26,9 +26,10 @@ export default {
     },
     methods: {
         async signUp() {
+            console.log("hello from signup")
             try {
-                await axios.post('http://localhost:8080/api/signups', {
-                    username: this.name,
+                await axios.post('https://webtech-projekt.onrender.com/api/v1/auth/register', {
+                    name: this.name,
                     email: this.email,
                     password: this.password
                 });
