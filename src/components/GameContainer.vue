@@ -33,6 +33,7 @@ import { reactive, onMounted, onUnmounted, ref } from 'vue';
 import Player from './Player.vue';
 import Monster from './Monster.vue';
 import Tile from './Tile.vue';
+import axios from 'axios';
 // import levelData from './levelData.json';
 
 let gameContainer = null;
@@ -41,7 +42,7 @@ let gameRect = null;
 onMounted(() => {
   gameContainer = document.querySelector('.game');
   updateGameRect();
-  loadTiles();
+  loadTiles("levelData1.json");
   window.addEventListener('resize', handleWindowResize);
 });
 
@@ -65,21 +66,16 @@ const playerData = reactive({
   health: 100
 });
 
-const loadTiles = () => {
+const loadTiles = async (level) => {
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
-  const endpoint = baseUrl + '/levelData?level=levelData1.json';
-  const requestOptions = {
-    method: 'GET'
-  };
-  
-  fetch(endpoint, requestOptions)
-    .then(response => response.json())
-    .then(data => {
-      tiles.value = data.tiles;
-    })
-    .catch(error => {
-      console.error('Error fetching level data:', error);
-    });
+  const endpoint = `${baseUrl}/levelData?level=${level}`;
+
+  try {
+    const response = await axios.get(endpoint);
+    tiles.value = response.data.tiles;
+  } catch (error) {
+    console.error('Error fetching level data:', error);
+  }
 };
 
 // let tiles = ref( levelData.tiles )
