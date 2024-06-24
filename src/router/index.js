@@ -33,6 +33,8 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
+    // Store the intended route to redirect to after login
+    localStorage.setItem('redirectRoute', to.fullPath);
     try {
       const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
       // Validate token on the server side
