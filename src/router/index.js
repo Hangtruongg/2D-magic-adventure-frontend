@@ -4,6 +4,7 @@ import GameContainer from '@/components/GameContainer.vue'
 import WelcomeAmaze from '@/components/WelcomeAmaze.vue';
 import SignUp from '@/components/SignUp.vue'
 import Register from '@/components/Register.vue'
+import axios from 'axios';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,11 +14,6 @@ const router = createRouter({
       name: 'home',
       component: WelcomeAmaze
     },
-    {
-      path: '/game',
-      name: 'game',
-      component: GameContainer
-    },
     {path: '/signUp',
       name:'signUp',
       component: SignUp
@@ -26,6 +22,32 @@ const router = createRouter({
       name: 'register',
       component: Register
     },
+    {
+      path: '/game',
+      name: 'game',
+      component: GameContainer,
+      meta: { requiresAuth: true}
+    },
   ]
 })
+
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    try {
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
+      // Validate token on the server side
+      const response = await axios.get(baseURL + '/validateToken');
+      if (response.status === 200) {
+        next(); // Token is valid, allow access to the route
+      } else {
+        next('/register'); // Token is invalid or expired, redirect to login
+      }
+    } catch (error) {
+      console.error('Token validation failed:', error);
+      next('/register'); // Handle validation failure
+    }
+  } else {
+    next(); // Allow access to routes that do not require authentication
+  }
+});
 export default router // end step 1
