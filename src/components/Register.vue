@@ -133,7 +133,21 @@ export default {
                 console.log("hello from login")
                 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
                 try {
-                    await axios.post(baseURL + '/api/v1/auth/authenticate', this.loginData);
+                    // await axios.post(baseURL + '/api/v1/auth/authenticate', this.loginData);
+                    axios
+                        .post(baseURL + '/api/v1/auth/authenticate', this.loginData)
+                        .then(function (response) {
+                            if (response.status == 200) {
+                            let d = new Date();
+                            d.setTime(d.getTime() + 1 * 24 * 60 * 60 * 1000);
+                            let expires = "expires=" + d.toUTCString();
+                            document.cookie =
+                                "jwtToken=" + response.data.token + ";" + expires + ";path=/";
+                            }
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
                     alert('Sign-up successful!');
                     // Handle successful sign-up (e.g., redirect to another page)
                 } catch (error) {
