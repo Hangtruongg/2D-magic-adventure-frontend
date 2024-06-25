@@ -6,6 +6,7 @@
     alt="Player"
     class="player-image"
   />
+
 </template>
 
 <script setup > 
@@ -180,4 +181,5 @@ onUnmounted(() => {
 canvas {
   position: absolute;
 }
+
 </style>*/

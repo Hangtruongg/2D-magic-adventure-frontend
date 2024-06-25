@@ -76,6 +76,7 @@
     </div>
     </div>
 </body>
+<audio ref="music" src="/src/assets/sound/tokyo.mp4" loop ></audio>
 </template>
 
 <script >
@@ -110,6 +111,13 @@ export default {
         };
     },
     methods: {
+        playMusic() {
+        this.playAudio();
+        },
+        playAudio() {
+        const audio = this.$refs.music;
+        audio.play();
+        },
         switchToRegister() {
         this.isLogin = false;
         },
@@ -157,8 +165,11 @@ export default {
             loginButton.addEventListener("click", () => {
                 container.classList.remove("right-panel-active");
             });
+
+            this.playAudio();
         
     }
+
 };
 
 </script>

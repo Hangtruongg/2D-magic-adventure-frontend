@@ -1,17 +1,20 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <!-- v-if="playerData.health > 0" -->
 <template>
+  
   <div
     class="game"
     tabindex="0"
     @keydown="movePlayer"
     ref="gameContainer"
   >
+
+  <div class="camera" ref="cameraContainer">
     <!-- Render the tiles -->
     <div v-for="(tile, index) in tiles" :key="index">
       <Tile :tileData="tile" />
     </div>
-
+  
     <!-- Render the player component -->
     <Player :position="playerData.position" :checkCollision="isCollision"/>
 
@@ -22,73 +25,127 @@
       </template>
     </div>
 
+     <!-- Render the objects (exp gun) -->
+     <div v-for="(object, index) in objects" :key="index">
+           v-if="!object.collected"
+           class="gun"
+           :style="{ left: object.position.x + 'px', top: object.position.y + 'px' }">
+        <img src="/assets/object/gun1.png" alt="gun" @click="pickupObject(object)">
+      </div>
+
+    
+  </div>
+
     <div class="health-display">Health: {{ playerData.health }}</div>
 
-    <div class="camera"></div>
   </div>
+
+
 </template>
 
 <script setup>
-import { reactive, onMounted, onUnmounted, ref } from 'vue';
+import { reactive, onMounted, onUnmounted, ref, watch } from 'vue';
 import Player from './Player.vue';
 import Monster from './Monster.vue';
 import Tile from './Tile.vue';
 import axios from 'axios';
-// import levelData from './levelData.json';
+import levelData from './levelData.json';
 
-let gameContainer = null;
-let gameRect = null;
+const gameContainer = ref(null);
+const cameraContainer = ref(null);
+const gameRect = ref(null);
+const zoomLevel = 1.5;
 
 onMounted(() => {
-  gameContainer = document.querySelector('.game');
+  
   updateGameRect();
-  loadTiles("levelData1.json");
   window.addEventListener('resize', handleWindowResize);
+  updateCameraTransform();
 });
-
 onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize);
 });
-
-//establish camera topdown
-const camera = document.querySelector('.viewPoint')
-
-
 const updateGameRect = () => {
-  if (gameContainer) {
-    gameRect = gameContainer.getBoundingClientRect();
+  if (gameContainer.value) {
+    gameRect.value = gameContainer.value.getBoundingClientRect();
   }
 };
+
+const updateCameraTransform = () => {
+  if(!gameRect.value || !cameraContainer.value) return;
+
+  const playerX = playerData.position.x;
+  const playerY = playerData.position.y;
+  const cameraX = (gameRect.value.width / 2) - (playerX * zoomLevel);
+  const cameraY = (gameRect.value.height / 2) - (playerY * zoomLevel);
+
+  cameraContainer.value.style.transform = `scale(${zoomLevel}) translate(${cameraX}px, ${cameraY}px)`;
+}
+//need to use these
+// onMounted(() => {
+//   gameContainer = document.querySelector('.game');
+//   updateGameRect();
+//   loadTiles("levelData1.json");
+//   window.addEventListener('resize', handleWindowResize);
+// });
+
+// onUnmounted(() => {
+//   window.removeEventListener('resize', handleWindowResize);
+// });
+
+
+// const updateGameRect = () => {
+//   if (gameContainer) {
+//     gameRect = gameContainer.getBoundingClientRect();
+//   }
+// };
 
 // Reactive object to store player position
 const playerData = reactive({
   position: { x: 900, y: 160 },
-  health: 100
+  health: 100, 
+  hasGun: false,
 });
 
-const loadTiles = async (level) => {
-  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
-  const endpoint = `${baseUrl}/levelData?level=${level}`;
 
-  try {
-    const response = await axios.get(endpoint);
-    tiles.value = response.data.tiles;
-  } catch (error) {
-    console.error('Error fetching level data:', error);
+//need to use these
+// const loadTiles = async (level) => {
+//   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+//   const endpoint = `${baseUrl}/levelData?level=${level}`;
+
+//   try {
+//     const response = await axios.get(endpoint);
+//     tiles.value = response.data.tiles;
+//   } catch (error) {
+//     console.error('Error fetching level data:', error);
+//   }
+// };
+
+let tiles = ref( levelData.tiles )
+//need to use this
+//const tiles = ref([]);
+let objects = reactive([
+{ type: 'gun', position: { x: 2000, y: 0 }, collected: false }
+//add more objects as needed
+]);
+
+// Function to handle object pickup
+const pickupObject = (object) => {
+  if (object.type === 'gun' && !playerData.hasExpGun) {
+    playerData.hasExpGun = true;
+    object.collected = true;
   }
+  // Add more conditions for other types of objects
 };
-
-// let tiles = ref( levelData.tiles )
-const tiles = ref([]);
 
 const currentTick = ref(0);
 
 const isCollision = (newX, newY, entityWidth, entityHeight) => {
   // Check if the new position intersects with any collidable tile
-  if (!gameRect) return true;
+  if (!gameRect.value) return true;
 
-  const containerRight = gameRect.right - entityWidth*2;
-  const containerBottom = gameRect.bottom - entityHeight;
+  const containerRight = gameRect.value.right - entityWidth*2;
+  const containerBottom = gameRect.value.bottom - entityHeight;
 
   if (newX < 0 || newX > containerRight || newY < 0 || newY > containerBottom) {
     return true;
@@ -156,6 +213,7 @@ const monsterAttackMelee = (monster, playerData) => {
 setInterval(() => {
   currentTick.value++;
   moveMonsters(monsters, playerData);
+  updateCameraTransform();
 }, 100);
 
 let monsters = reactive([
@@ -169,21 +227,30 @@ monsters = monsters.filter((monster) => monster.health > 0);
 const handleWindowResize = () => {
   updateGameRect();
   adjustPlayerPosition();
+  updateCameraTransform();
 };
 
 const adjustPlayerPosition = () => {
-  if (!gameRect) return;
+  if (!gameRect.value) return;
 
   const playerElement = document.querySelector('.player-image');
   const playerRect = playerElement.getBoundingClientRect();
 
-  playerData.position.x = Math.min(playerData.position.x, gameRect.width - playerRect.width);
-  playerData.position.y = Math.min(playerData.position.y, gameRect.height - playerRect.height);
+  playerData.position.x = Math.min(playerData.position.x, gameRect.value.width - playerRect.width);
+  playerData.position.y = Math.min(playerData.position.y, gameRect.value.height - playerRect.height);
 };
+
+watch(playerData.position, () => {
+  updateCameraTransform();
+});
+
+
 </script>
 
 <style scoped>
 /* Game styles */
+
+
 .game {
   width: 98vw;
   height: 98vh;
@@ -191,6 +258,8 @@ const adjustPlayerPosition = () => {
   margin: auto; /* Center the container horizontally */
   position: relative; /* Ensure positioning relative to its containing element */
   justify-content: center;
+  transition: left 0.1s, top 0.1s;
+  background-color: black;
 }
 .health-display {
   position: absolute;
@@ -203,27 +272,20 @@ const adjustPlayerPosition = () => {
   height: 100%;
   margin: 0;
 }
-:root{
-  --pixel-size: 2px;
-  --grid-cell: calc(var(--pixel-size) * 16);
-}
-@media(min-width: 700px) {
-  :root {
-    --pixel-size: 3px;
-  }
-}
-@media( min-width: 900px ) {
-  :root {
-    --pixel-size: 4px;
-  }
-}
 .camera {
-  width: calc(var(--pixel-size) * 160);
-  height: calc(var(--pixel-size) * 144);
-  overflow: hidden;
-  background: #61ddf7;
-  position: relative;
+  position: absolute;
+  transition: transform 0.1s;
+  transform-origin: top left;
 }
+
+.gun {
+  position: absolute;
+  width: 30px; /* Adjust size as needed */
+  height: 30px; /* Adjust size as needed */
+  cursor: pointer; /* Optional: Change cursor to pointer when hovering */
+}
+
+
 
 </style>
 
