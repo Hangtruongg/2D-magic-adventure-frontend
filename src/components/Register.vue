@@ -125,31 +125,37 @@ export default {
         this.isLogin = true;
         },
         async register() {
-                console.log("hello from register")
-                const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
-                try {
-                    await axios.post(baseURL + '/api/v1/auth/register', this.registerData);
+            const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
+            try {
+                await axios.post(baseURL + '/api/v1/auth/register', this.registerData);
+                alert('Sign-up successful!');
+                this.$router.push('/');
+                localStorage.removeItem('redirectRoute');
+                // Handle successful sign-up (e.g., redirect to another page)
+            } catch (error) {
+                console.error('There was an error signing up!', error);
+                alert('Sign-up failed!');
+                // Handle sign-up error
+            }
+        },
+        async login() {
+            const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
+            try {
+                const response = await axios.post(baseURL + '/api/v1/auth/authenticate', this.loginData);
+                    
+                if(response.status === 200) {
                     alert('Sign-up successful!');
-                    // Handle successful sign-up (e.g., redirect to another page)
-                } catch (error) {
-                    console.error('There was an error signing up!', error);
-                    alert('Sign-up failed!');
-                    // Handle sign-up error
+                    // Redirect user to the stored redirect route or default route
+                    const redirectRoute = localStorage.getItem('redirectRoute') || '/';
+                    this.$router.push(redirectRoute);
+                    localStorage.removeItem('redirectRoute');
                 }
-            },
-            async login() {
-                console.log("hello from login")
-                const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
-                try {
-                    await axios.post(baseURL + '/api/v1/auth/authenticate', this.loginData);
-                    alert('Sign-up successful!');
-                    // Handle successful sign-up (e.g., redirect to another page)
-                } catch (error) {
-                    console.error('There was an error signing up!', error);
-                    alert('Sign-up failed!');
-                    // Handle sign-up error
-                }
-            },
+            } catch (error) {
+                console.error('There was an error signing up!', error);
+                alert('Sign-up failed!');
+                // Handle sign-up error
+            }
+        },
     },
     name: 'AuthContainer',
     mounted() {
