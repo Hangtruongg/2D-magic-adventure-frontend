@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 // import GameCenter from '@/components/GameCenter.vue'
 import GameContainer from '@/components/GameContainer.vue'
 import WelcomeAmaze from '@/components/WelcomeAmaze.vue';
+import Deathscreen from '@/components/Deathscreen.vue'
 import SignUp from '@/components/SignUp.vue'
 import Register from '@/components/Register.vue'
 import axios from 'axios';
@@ -28,6 +29,12 @@ const router = createRouter({
       component: GameContainer,
       meta: { requiresAuth: true}
     },
+    {
+      path: '/deathscreen',
+      name: 'deathscreen',
+      component: Deathscreen,
+      // meta: {requiresAuth: true}
+    }
   ]
 })
 

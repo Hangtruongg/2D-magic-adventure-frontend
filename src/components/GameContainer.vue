@@ -49,7 +49,7 @@ import Player from './Player.vue';
 import Monster from './Monster.vue';
 import Tile from './Tile.vue';
 import axios from 'axios';
-import levelData from './levelData.json';
+// import levelData from './levelData.json';
 
 const gameContainer = ref(null);
 const cameraContainer = ref(null);
@@ -81,24 +81,17 @@ const updateCameraTransform = () => {
 
   cameraContainer.value.style.transform = `scale(${zoomLevel}) translate(${cameraX}px, ${cameraY}px)`;
 }
-//need to use these
-// onMounted(() => {
-//   gameContainer = document.querySelector('.game');
-//   updateGameRect();
-//   loadTiles("levelData1.json");
-//   window.addEventListener('resize', handleWindowResize);
-// });
 
-// onUnmounted(() => {
-//   window.removeEventListener('resize', handleWindowResize);
-// });
+onMounted(() => {
+  gameContainer.value = document.querySelector('.game');
+  updateGameRect();
+  loadTiles("levelData1.json");
+  window.addEventListener('resize', handleWindowResize);
+});
 
-
-// const updateGameRect = () => {
-//   if (gameContainer) {
-//     gameRect = gameContainer.getBoundingClientRect();
-//   }
-// };
+onUnmounted(() => {
+  window.removeEventListener('resize', handleWindowResize);
+});
 
 // Reactive object to store player position
 const playerData = reactive({
@@ -109,21 +102,21 @@ const playerData = reactive({
 
 
 //need to use these
-// const loadTiles = async (level) => {
-//   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
-//   const endpoint = `${baseUrl}/levelData?level=${level}`;
+const loadTiles = async (level) => {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+  const endpoint = `${baseUrl}/levelData?level=${level}`;
 
-//   try {
-//     const response = await axios.get(endpoint);
-//     tiles.value = response.data.tiles;
-//   } catch (error) {
-//     console.error('Error fetching level data:', error);
-//   }
-// };
+  try {
+    const response = await axios.get(endpoint);
+    tiles.value = response.data.tiles;
+  } catch (error) {
+    console.error('Error fetching level data:', error);
+  }
+};
 
-let tiles = ref( levelData.tiles )
+// let tiles = ref( levelData.tiles )
 //need to use this
-//const tiles = ref([]);
+const tiles = ref([]);
 let objects = reactive([
 { type: 'gun', position: { x: 2000, y: 0 }, collected: false }
 //add more objects as needed
