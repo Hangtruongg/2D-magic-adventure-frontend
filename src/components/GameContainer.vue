@@ -56,7 +56,7 @@ onMounted(() => {
   
   updateGameRect();
   window.addEventListener('resize', handleWindowResize);
-  updateCameraTransform();
+  // updateCameraTransform();
 });
 onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize);
@@ -200,7 +200,6 @@ const isCollision = (newX, newY, entityWidth, entityHeight) => {
   });
 };
 
-
 const moveMonsters = (monsters, playerData) => {
   for (let i = 0; i < monsters.length; i++) {
     let x = monsters[i].position.x;
@@ -209,49 +208,86 @@ const moveMonsters = (monsters, playerData) => {
     let playerPositionX = playerData.position.x;
     let playerPositionY = playerData.position.y;
 
+    let newX = x;
+    let newY = y;
+
     if (x + monsterSpeed < playerPositionX) {
-      x += monsterSpeed;
-    } else if (x - monsterSpeed > playerPositionX) {
-      x -= monsterSpeed;
+      newX += monsterSpeed;
+    }
+    if (x - monsterSpeed > playerPositionX) {
+      newX -= monsterSpeed;
     }
     if (y + monsterSpeed < playerPositionY) {
-      y += monsterSpeed;
-    } else if (y - monsterSpeed > playerPositionY) {
-      y -= monsterSpeed;
+      newY += monsterSpeed;
+    }
+    if (y - monsterSpeed > playerPositionY) {
+      newY -= monsterSpeed;
     }
 
     const monsterWidth = 50;  // Assuming monster width is 50
     const monsterHeight = 50; // Assuming monster height is 50
 
-    if (!isCollision(x, y, monsterWidth, monsterHeight)) {
-      monsters[i].position.x = x;
-      monsters[i].position.y = y;
+    // Check X-axis movement
+    if (!isCollision(newX, y, monsterWidth, monsterHeight)) {
+      monsters[i].position.x = newX;
     }
 
-    monsterAttackMelee(monsters[i], playerData)
+    // Check Y-axis movement
+    if (!isCollision(x, newY, monsterWidth, monsterHeight)) {
+      monsters[i].position.y = newY;
+    }
 
+    // Handle case where both X and Y movements are blocked
+    if (isCollision(newX, y, monsterWidth, monsterHeight) && isCollision(x, newY, monsterWidth, monsterHeight)) {
+      // Simple collision avoidance: try moving in a different direction
+      let directions = [
+        { dx: monsterSpeed, dy: 0 },
+        { dx: -monsterSpeed, dy: 0 },
+        { dx: 0, dy: monsterSpeed },
+        { dx: 0, dy: -monsterSpeed }
+      ];
+
+      // Shuffle the directions array to introduce randomness
+      directions = directions.sort(() => Math.random() - 0.5);
+
+      for (let direction of directions) {
+        let tryX = x + direction.dx;
+        let tryY = y + direction.dy;
+        if (!isCollision(tryX, tryY, monsterWidth, monsterHeight)) {
+          monsters[i].position.x = tryX;
+          monsters[i].position.y = tryY;
+          break;
+        }
+      }
+    }
+
+    monsterAttackMelee(monsters[i], playerData);
   }
-}
+};
 
 const monsterAttackMelee = (monster, playerData) => {
-  if (Math.abs(monster.position.x - playerData.position.x) <= monster.speed &&
-        Math.abs(monster.position.y - playerData.position.y) <= monster.speed &&
-        monster.lastAttack + monster.attackSpeed < currentTick.value) {
-        playerData.health -= monster.damage;
-        monster.lastAttack = currentTick.value;
-    }
-}
+  if (
+    Math.abs(monster.position.x - playerData.position.x) <= monster.speed &&
+    Math.abs(monster.position.y - playerData.position.y) <= monster.speed &&
+    monster.lastAttack + monster.attackSpeed < currentTick.value
+  ) {
+    playerData.health -= monster.damage;
+    monster.lastAttack = currentTick.value;
+  }
+};
+
+
 
 
 setInterval(() => {
   currentTick.value++;
   moveMonsters(monsters, playerData);
-  updateCameraTransform();
+  // updateCameraTransform();
   checkObjectPickup();
 }, 100);
 
 let monsters = reactive([
-  { imagePath: '/assets/entity images/slime.png', position: { x: 400, y: 550 }, health: 55, speed: 4, damage: 2, attackSpeed: 3, lastAttack: 0, monsterType: "melee" },
+  { imagePath: '/assets/entity images/slime.png', position: { x: 900, y: 200 }, health: 55, speed: 4, damage: 2, attackSpeed: 3, lastAttack: 0, monsterType: "melee" },
   { imagePath: '/assets/entity images/slime.png', position: { x: 200, y: 200 }, health: 100, speed: 6, damage: 4, attackSpeed: 5, lastAttack: 0, monsterType: "ranged" }
   // Add more monsters as needed
 ]);
@@ -261,7 +297,7 @@ monsters = monsters.filter((monster) => monster.health > 0);
 const handleWindowResize = () => {
   updateGameRect();
   adjustPlayerPosition();
-  updateCameraTransform();
+  // updateCameraTransform();
 };
 
 const adjustPlayerPosition = () => {
@@ -275,7 +311,7 @@ const adjustPlayerPosition = () => {
 };
 
 watch(playerData.position, () => {
-  updateCameraTransform();
+  // updateCameraTransform();
 });
 
 

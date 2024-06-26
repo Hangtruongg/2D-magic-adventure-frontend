@@ -20,8 +20,6 @@ const props = defineProps({
   checkCollision: Function,
   // image:String
 })
-
-
 // Props
 const { position } = props
 const playerImageSrc = ref( '/assets/character/George_down.png')
@@ -45,52 +43,57 @@ watch(() => props.direction, (newDirection) => {
   switschSprite(newDirection)
 })
 
+const activeKeys = ref({});
 
-//Handle keydown events
 const handleKeyDown = (event) => {
-  const speed = 10;
-  // const containerRight = gameContainer().right;
-  // const containerBottom = props.gameContainer.bottom;
+  activeKeys.value[event.key.toLowerCase()] = true;
+};
 
+const handleKeyUp = (event) => {
+  activeKeys.value[event.key.toLowerCase()] = false;
+};
+
+const speed = 0.9;
+
+const updatePosition = () => {
   let newX = position.x;
   let newY = position.y;
 
-  switch (event.key) {
-    case 'w':
-    case 'W':
-    switschSprite('up')
+  if (activeKeys.value['w']) {
+    switschSprite('up');
     newY -= speed;
-    break
-    case 's':
-    case'S':
-    switschSprite('down')
-    newY += speed;
-    break
-    case 'a':
-    case'A':
-    switschSprite('left')
-    newX -= speed;
-    break
-    case 'd':
-    case 'D':
-    switschSprite('right')
-    newX += speed;
-    break;
   }
-  if(!props.checkCollision(newX, newY, 50, 50)) {
+  if (activeKeys.value['s']) {
+    switschSprite('down');
+    newY += speed;
+  }
+  if (activeKeys.value['a']) {
+    switschSprite('left');
+    newX -= speed;
+  }
+  if (activeKeys.value['d']) {
+    switschSprite('right');
+    newX += speed;
+  }
+
+  if (!props.checkCollision(newX, newY, 50, 50)) {
     position.x = newX;
     position.y = newY;
   }
-}
 
-// Add event listener on mounted and remove on unmounted
+  requestAnimationFrame(updatePosition);
+};
+
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyDown)
-})
+  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('keyup', handleKeyUp);
+  requestAnimationFrame(updatePosition);
+});
 
 onUnmounted(() => {
-  window.addEventListenerr('keydown', handleKeyDown)
-})
+  window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener('keyup', handleKeyUp);
+});
 
 /*  onMounted(() => {
 
