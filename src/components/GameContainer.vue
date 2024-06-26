@@ -16,7 +16,7 @@
     </div>
   
     <!-- Render the player component -->
-    <Player :position="playerData.position" :checkCollision="isCollision"/>
+    <Player :position="playerData.position" :image="playerData.image" :checkCollision="isCollision"/>
 
     <!-- Render the monsters -->
     <div v-for="(monster, index) in monsters" :key="index">
@@ -25,31 +25,27 @@
       </template>
     </div>
 
-     <!-- Render the objects (exp gun) -->
-     <div v-for="(object, index) in objects" :key="index">
-           v-if="!object.collected"
-           class="gun"
-           :style="{ left: object.position.x + 'px', top: object.position.y + 'px' }">
-        <img src="/assets/object/gun1.png" alt="gun" @click="pickupObject(object)">
+         <!-- Render the objects (exp gun and coin) -->
+      <div v-for="(object, index) in uncollectedObjects" :key="index" class="object" :style="{ left: object.position.x + 'px', top: object.position.y + 'px' }">
+        <img :src="getObjectImagePath(object.type)" :alt="object.type" />
       </div>
-
     
   </div>
 
     <div class="health-display">Health: {{ playerData.health }}</div>
-
+    <div class="coin-display">Coins: {{ playerData.collectedCoins }}</div>
   </div>
 
 
 </template>
 
 <script setup>
-import { reactive, onMounted, onUnmounted, ref, watch } from 'vue';
+import { reactive, onMounted, onUnmounted, ref, watch, computed } from 'vue';
 import Player from './Player.vue';
 import Monster from './Monster.vue';
 import Tile from './Tile.vue';
 import axios from 'axios';
-import levelData from './levelData.json';
+// import levelData from './levelData.json';
 
 const gameContainer = ref(null);
 const cameraContainer = ref(null);
@@ -82,16 +78,16 @@ const updateCameraTransform = () => {
   cameraContainer.value.style.transform = `scale(${zoomLevel}) translate(${cameraX}px, ${cameraY}px)`;
 }
 //need to use these
-// onMounted(() => {
-//   gameContainer = document.querySelector('.game');
-//   updateGameRect();
-//   loadTiles("levelData1.json");
-//   window.addEventListener('resize', handleWindowResize);
-// });
+onMounted(() => {
+  gameContainer.value = document.querySelector('.game');
+  updateGameRect();
+  loadTiles("levelData1.json");
+  window.addEventListener('resize', handleWindowResize);
+});
 
-// onUnmounted(() => {
-//   window.removeEventListener('resize', handleWindowResize);
-// });
+onUnmounted(() => {
+  window.removeEventListener('resize', handleWindowResize);
+});
 
 
 // const updateGameRect = () => {
@@ -105,37 +101,81 @@ const playerData = reactive({
   position: { x: 900, y: 160 },
   health: 100, 
   hasGun: false,
+  collectedCoins:0,
+  // image:'/assets/character/George_down.png'
 });
+
+const getObjectImagePath = (type) => {
+  switch (type) {
+    case 'gun':
+      return '/assets/object/gun1.png';
+    case 'coin':
+      return '/assets/object/coin.png';
+    // default:
+    //   return '/assets/object/default.png'; // default image if type does not match
+  }
+}; 
 
 
 //need to use these
-// const loadTiles = async (level) => {
-//   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
-//   const endpoint = `${baseUrl}/levelData?level=${level}`;
+const loadTiles = async (level) => {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+  const endpoint = `${baseUrl}/levelData?level=${level}`;
 
-//   try {
-//     const response = await axios.get(endpoint);
-//     tiles.value = response.data.tiles;
-//   } catch (error) {
-//     console.error('Error fetching level data:', error);
-//   }
-// };
+  try {
+    const response = await axios.get(endpoint);
+    tiles.value = response.data.tiles;
+  } catch (error) {
+    console.error('Error fetching level data:', error);
+  }
+};
 
-let tiles = ref( levelData.tiles )
+// let tiles = ref( levelData.tiles )
 //need to use this
-//const tiles = ref([]);
-let objects = reactive([
-{ type: 'gun', position: { x: 2000, y: 0 }, collected: false }
+const tiles = ref([]);
+
+const objects = reactive([
+{type:'gun', position: { x: 1200, y: 20 }, collected: false },
+{type:'coin', position: { x: 1000, y: 20 }, collected: false },
+{type:'coin', position: { x: 900, y: 20 }, collected: false },
+{type:'coin', position: { x: 950, y: 20 }, collected: false },
+
+
 //add more objects as needed
 ]);
 
+// Computed property to filter out collected objects
+const uncollectedObjects = computed(() => objects.filter(object => !object.collected));
+
+
 // Function to handle object pickup
 const pickupObject = (object) => {
-  if (object.type === 'gun' && !playerData.hasExpGun) {
-    playerData.hasExpGun = true;
+  if (object.type === 'gun' && !playerData.hasGun) {
+    playerData.hasGun = true;
+    // playerData.image='/assets/character/George_down(gun).png';
+    object.collected = true;
+  } else if (object.type === 'coin') {
+    playerData.collectedCoins += 1;
     object.collected = true;
   }
   // Add more conditions for other types of objects
+};
+
+const checkObjectPickup = () => {
+  uncollectedObjects.value.forEach(object => {
+    if (checkCollision(playerData.position, object.position, 50, 50)) {
+      pickupObject(object);
+    }
+  });
+};
+
+const checkCollision = (pos1, pos2, size1, size2) => {
+  return (
+    pos1.x < pos2.x + size2 &&
+    pos1.x + size1 > pos2.x &&
+    pos1.y < pos2.y + size2 &&
+    pos1.y + size1 > pos2.y
+  );
 };
 
 const currentTick = ref(0);
@@ -214,6 +254,7 @@ setInterval(() => {
   currentTick.value++;
   moveMonsters(monsters, playerData);
   updateCameraTransform();
+  checkObjectPickup();
 }, 100);
 
 let monsters = reactive([
@@ -285,6 +326,17 @@ watch(playerData.position, () => {
   cursor: pointer; /* Optional: Change cursor to pointer when hovering */
 }
 
+.coin-display {
+  left: 100px;
+}
+
+.object {
+  position: absolute;
+  width: 30px; /* Adjust size as needed */
+  height: 30px; /* Adjust size as needed */
+  z-index: 20; /* Ensure objects are above the player and tiles */
+  cursor: pointer; /* Optional: Change cursor to pointer when hovering */
+}
 
 
 </style>

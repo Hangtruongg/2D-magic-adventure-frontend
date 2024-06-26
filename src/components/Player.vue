@@ -18,6 +18,7 @@ const props = defineProps({
   position: Object, // Define the position prop
   direction: String, // track direction
   checkCollision: Function,
+  // image:String
 })
 
 
