@@ -259,7 +259,7 @@ watch(playerData.position, () => {
   position: relative; /* Ensure positioning relative to its containing element */
   justify-content: center;
   transition: left 0.1s, top 0.1s;
-  background-color: black;
+  background-color: yellowgreen;
 }
 .health-display {
   position: absolute;
