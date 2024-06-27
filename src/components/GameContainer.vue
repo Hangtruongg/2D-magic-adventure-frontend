@@ -21,7 +21,8 @@
             :direction="playerData.direction"
             :checkObjectPickup="checkObjectPickup"
             :hasGun="playerData.hasGun"
-            :shootBullet="shootBullet"/>
+            :shootBullet="shootBullet"
+            :keybinds="keybinds"/>
 
       <!-- Render the bullets -->
       <div v-for="(bullet, index) in bullets" :key="index" class="bullet" :style="{ left: bullet.position.x + 'px', top: bullet.position.y + 'px', position: 'absolute' }">
@@ -64,7 +65,7 @@ const gameRect = ref(null);
 const zoomLevel = 1;
 
 onMounted(() => {
-  
+  updateKeybinds();
   updateGameRect();
   window.addEventListener('resize', handleWindowResize);
   // updateCameraTransform();
@@ -72,6 +73,31 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize);
 });
+
+const updateKeybinds = async () => {
+  const keybindings = localStorage.getItem('keybinds');
+  if(keybindings) {
+    const savedKeybinds = JSON.parse(localStorage.getItem('keybinds'));
+    if (savedKeybinds) {
+      Object.assign(keybinds, savedKeybinds);
+    }
+  }
+  else {
+    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+    const endpoint = `${baseUrl}/getKeybinds`;
+    const keybindResponse = await axios.get(endpoint);
+    if(keybindResponse.status === 200) {
+      localStorage.setItem('keybinds', JSON.stringify(keybindResponse.data));
+      updateKeybinds();
+    } else {
+      const defaultKeybinds = {moveUp: 'w', moveDown: 's', moveLeft: 'a', moveRight: 'd', shoot: 'f', settings: 'p'};
+      Object.assign(keybinds, defaultKeybinds);
+    }
+  }
+}
+
+const keybinds = reactive({});
+
 const updateGameRect = () => {
   if (gameContainer.value) {
     gameRect.value = gameContainer.value.getBoundingClientRect();

@@ -11,11 +11,18 @@
 
 <script setup > 
 import { defineProps,ref, onMounted, onUnmounted, watch } from 'vue' // Import defineProps helper
+import { useRouter } from 'vue-router'
+
+  const router = useRouter(); // Initialize the router
 // import George_up from '@/assets/character/George_up.png'
 
 // Define props
 const props = defineProps({
   position: Object, // Define the position prop
+  keybinds: {
+    type: Object,
+    required: true,
+  },
   direction: String, // track direction
   checkCollision: Function,
   checkObjectPickup: Function,
@@ -82,30 +89,33 @@ let lastDirection;
 const updatePosition = () => {
   let newX = position.x;
   let newY = position.y;
-  if (activeKeys.value['w']) {
+  if (activeKeys.value[props.keybinds.moveUp]) {
     lastDirection = 'up';
     switchSprite(lastDirection);
     newY -= speed;
   }
-  if (activeKeys.value['s']) {
+  if (activeKeys.value[props.keybinds.moveDown]) {
     lastDirection = 'down';
     switchSprite(lastDirection);
     newY += speed;
   }
-  if (activeKeys.value['a']) {
+  if (activeKeys.value[props.keybinds.moveLeft]) {
     lastDirection = 'left'
     switchSprite(lastDirection);
     newX -= speed;
   }
-  if (activeKeys.value['d']) {
+  if (activeKeys.value[props.keybinds.moveRight]) {
     lastDirection = 'right';
     switchSprite(lastDirection);
     newX += speed;
   }
-  if (activeKeys.value['f']) {
+  if (activeKeys.value[props.keybinds.shoot]) {
     if (props.hasGun) {
         props.shootBullet(position, lastDirection); // Shoot 
     }
+  }
+  if(activeKeys.value[props.keybinds.settings]) {
+    router.push('/settings')
   }
 
   if (!props.checkCollision(newX, newY, 50, 50)) {

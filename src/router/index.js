@@ -5,6 +5,7 @@ import WelcomeAmaze from '@/components/WelcomeAmaze.vue';
 import Deathscreen from '@/components/Deathscreen.vue'
 import SignUp from '@/components/SignUp.vue'
 import Register from '@/components/Register.vue'
+import Settings from '@/components/Settings.vue'
 import axios from 'axios';
 
 const router = createRouter({
@@ -15,11 +16,13 @@ const router = createRouter({
       name: 'home',
       component: WelcomeAmaze
     },
-    {path: '/signUp',
+    {
+      path: '/signUp',
       name:'signUp',
       component: SignUp
     },
-    {path: '/register',
+    {
+      path: '/register',
       name: 'register',
       component: Register
     },
@@ -27,13 +30,19 @@ const router = createRouter({
       path: '/game',
       name: 'game',
       component: GameContainer,
-      meta: { requiresAuth: true}
+      meta: { requiresAuth: true }
     },
     {
       path: '/deathscreen',
       name: 'deathscreen',
       component: Deathscreen,
       // meta: {requiresAuth: true}
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: Settings,
+      meta: { requiresAuth: true }
     }
   ]
 })
