@@ -25,7 +25,7 @@
 
       <!-- Render the bullets -->
       <div v-for="(bullet, index) in bullets" :key="index" class="bullet" :style="{ left: bullet.position.x + 'px', top: bullet.position.y + 'px', position: 'absolute' }">
-        <img :src="bullet.image" alt="Bullet" />
+        <img :src="bullet.image" alt="Bullet" width="50px" height="50px"/>
       </div>
 
     <!-- Render the monsters -->
@@ -286,7 +286,7 @@ const shootBullet = (position, direction) => {
 const bullets = reactive([]);
 
 const moveBullets = () => {
-  bullets.forEach((bullet, index) => {
+  bullets.forEach(bullet => {
     switch (bullet.direction) {
       case 'up':
         bullet.position.y -= bullet.speed;
@@ -307,14 +307,14 @@ const moveBullets = () => {
       bullet.position.x < 0 || bullet.position.x > gameRect.value.width ||
       bullet.position.y < 0 || bullet.position.y > gameRect.value.height
     ) {
-      bullets.splice(index, 1);
+      bullets.splice(bullet)
     }
 
     // Check collision bullet with monsters
     monsters.forEach(monster => {
       if (monster.health > 0 && checkCollision(bullet.position, monster.position, 10, 50)) {
         monster.health -= 25; // Adjust bullet damage as needed
-        bullets.splice(index, 1); // Remove bullet after hit
+        bullets.splice(bullet); // Remove bullet after hit
       }
     });
   });
@@ -376,8 +376,9 @@ const moveBullets = () => {
 }
 
 .bullet {
-  width: 5px;
-  height: 5px;
+  position: absolute;
+  width: 1px;
+  height: 1px;
 }
 
 

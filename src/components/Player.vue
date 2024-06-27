@@ -76,28 +76,35 @@ const handleKeyUp = (event) => {
   activeKeys.value[event.key.toLowerCase()] = false;
 };
 const speed = 0.9;
+
+let lastDirection;
+
 const updatePosition = () => {
   let newX = position.x;
   let newY = position.y;
   if (activeKeys.value['w']) {
-    switchSprite('up');
+    lastDirection = 'up';
+    switchSprite(lastDirection);
     newY -= speed;
   }
   if (activeKeys.value['s']) {
-    switchSprite('down');
+    lastDirection = 'down';
+    switchSprite(lastDirection);
     newY += speed;
   }
   if (activeKeys.value['a']) {
-    switchSprite('left');
+    lastDirection = 'left'
+    switchSprite(lastDirection);
     newX -= speed;
   }
   if (activeKeys.value['d']) {
-    switchSprite('right');
+    lastDirection = 'right';
+    switchSprite(lastDirection);
     newX += speed;
   }
   if (activeKeys.value['f']) {
     if (props.hasGun) {
-        props.shootBullet(position, props.direction); // Shoot 
+        props.shootBullet(position, lastDirection); // Shoot 
     }
   }
 
