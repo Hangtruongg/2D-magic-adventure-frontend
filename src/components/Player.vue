@@ -25,6 +25,7 @@ const props = defineProps({
 })
 
 
+
 // Props
 const { position, checkObjectPickup } = props
 
@@ -96,7 +97,7 @@ const handleKeyDown = (event) => {
     switchSprite('right')
     newX += speed;
     break;
-    case ' ':
+    case '1':
       if (props.hasGun) {
         props.shootBullet(position, props.direction); // Shoot a bullet
       }

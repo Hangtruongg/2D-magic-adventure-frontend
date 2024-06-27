@@ -22,7 +22,7 @@
             :direction="playerData.direction"
             :checkObjectPickup="checkObjectPickup"
             :hasGun="playerData.hasGun"
-            @shootBullet="shootBullet"/>
+            :shootBullet="shootBullet"/>
 
       <!-- Render the bullets -->
       <div v-for="(bullet, index) in bullets" :key="index" class="bullet" :style="{ left: bullet.position.x + 'px', top: bullet.position.y + 'px', position: 'absolute' }">
