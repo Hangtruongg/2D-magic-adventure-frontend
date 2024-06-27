@@ -12,7 +12,7 @@
 import { defineProps } from 'vue';
 
 const props = defineProps({
-  monsterData: Object
+  monsterData: Object,
 });
 </script>
 

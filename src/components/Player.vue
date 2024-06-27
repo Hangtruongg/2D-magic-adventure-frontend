@@ -10,7 +10,7 @@
 </template>
 
 <script setup > 
-import { defineProps,ref, onMounted, onUnmounted } from 'vue' // Import defineProps helper
+import { defineProps,ref, onMounted, onUnmounted, watch } from 'vue' // Import defineProps helper
 // import George_up from '@/assets/character/George_up.png'
 
 // Define props
@@ -18,12 +18,16 @@ const props = defineProps({
   position: Object, // Define the position prop
   direction: String, // track direction
   checkCollision: Function,
+  checkObjectPickup: Function,
+  hasGun:Boolean,
+  shootBullet: Function,
   // image:String
 })
 
 
 // Props
-const { position } = props
+const { position, checkObjectPickup } = props
+
 const playerImageSrc = ref( '/assets/character/George_down.png')
 
 const playerImages = {
@@ -33,17 +37,33 @@ const playerImages = {
   right: '/assets/character/George_right.png',
 }
 
-//Function to switch the player image based on the direction
-const switschSprite = (direction) => {
-  playerImageSrc.value = playerImages[direction] || playerImages.down
-}
+const playerImagesWithGun = {
+  up: '/assets/character/George_up(gun).png',
+  down: '/assets/character/George_down(gun).png',
+  left: '/assets/character/George_left(gun).png',
+  right: '/assets/character/George_right(gun).png',
+};
+
+// Function to switch the player image based on the direction and gun possession
+const switchSprite = (direction) => {
+  if (props.hasGun) {
+    playerImageSrc.value = playerImagesWithGun[direction] || playerImagesWithGun.down;
+  } else {
+    playerImageSrc.value = playerImages[direction] || playerImages.down;
+  }
+};
+
+// Watcher to update the player image when direction or hasGun changes
+watch([() => props.direction, () => props.hasGun], ([newDirection]) => {
+  switchSprite(newDirection);
+});
 
 
 // watch for direction changes
-import {watch} from 'vue'
-watch(() => props.direction, (newDirection) => {
-  switschSprite(newDirection)
-})
+// import {watch} from 'vue'
+// watch(() => props.direction, (newDirection) => {
+//   switschSprite(newDirection)
+// })
 
 
 //Handle keydown events
@@ -58,34 +78,42 @@ const handleKeyDown = (event) => {
   switch (event.key) {
     case 'w':
     case 'W':
-    switschSprite('up')
+    switchSprite('up')
     newY -= speed;
     break
     case 's':
     case'S':
-    switschSprite('down')
+    switchSprite('down')
     newY += speed;
     break
     case 'a':
     case'A':
-    switschSprite('left')
+    switchSprite('left')
     newX -= speed;
     break
     case 'd':
     case 'D':
-    switschSprite('right')
+    switchSprite('right')
     newX += speed;
     break;
+    case ' ':
+      if (props.hasGun) {
+        props.shootBullet(position, props.direction); // Shoot a bullet
+      }
+      break;
   }
   if(!props.checkCollision(newX, newY, 50, 50)) {
     position.x = newX;
     position.y = newY;
   }
+
+  checkObjectPickup();
 }
 
 // Add event listener on mounted and remove on unmounted
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyDown)
+  window.addEventListener('keydown', handleKeyDown),
+  switchSprite(props.direction);
 })
 
 onUnmounted(() => {
