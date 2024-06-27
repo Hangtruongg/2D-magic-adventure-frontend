@@ -10,7 +10,7 @@
 </template>
 
 <script setup > 
-import { defineProps,ref, onMounted, onUnmounted } from 'vue' // Import defineProps helper
+import { defineProps,ref, onMounted, onUnmounted, watch } from 'vue' // Import defineProps helper
 // import George_up from '@/assets/character/George_up.png'
 
 // Define props
@@ -18,10 +18,17 @@ const props = defineProps({
   position: Object, // Define the position prop
   direction: String, // track direction
   checkCollision: Function,
+  checkObjectPickup: Function,
+  hasGun:Boolean,
+  shootBullet: Function,
   // image:String
 })
+
+
+
 // Props
-const { position } = props
+const { position, checkObjectPickup } = props
+
 const playerImageSrc = ref( '/assets/character/George_down.png')
 
 const playerImages = {
@@ -31,69 +38,88 @@ const playerImages = {
   right: '/assets/character/George_right.png',
 }
 
-//Function to switch the player image based on the direction
-const switschSprite = (direction) => {
-  playerImageSrc.value = playerImages[direction] || playerImages.down
-}
+const playerImagesWithGun = {
+  up: '/assets/character/George_up(gun).png',
+  down: '/assets/character/George_down(gun).png',
+  left: '/assets/character/George_left(gun).png',
+  right: '/assets/character/George_right(gun).png',
+};
+
+// Function to switch the player image based on the direction and gun possession
+const switchSprite = (direction) => {
+  if (props.hasGun) {
+    playerImageSrc.value = playerImagesWithGun[direction] || playerImagesWithGun.down;
+  } else {
+    playerImageSrc.value = playerImages[direction] || playerImages.down;
+  }
+};
+
+// Watcher to update the player image when direction or hasGun changes
+watch([() => props.direction, () => props.hasGun], ([newDirection]) => {
+  switchSprite(newDirection);
+});
 
 
 // watch for direction changes
-import {watch} from 'vue'
-watch(() => props.direction, (newDirection) => {
-  switschSprite(newDirection)
-})
+// import {watch} from 'vue'
+// watch(() => props.direction, (newDirection) => {
+//   switschSprite(newDirection)
+// })
 
-const activeKeys = ref({});
 
+//Handle keydown events
 const handleKeyDown = (event) => {
-  activeKeys.value[event.key.toLowerCase()] = true;
-};
+  const speed = 10;
+  // const containerRight = gameContainer().right;
+  // const containerBottom = props.gameContainer.bottom;
 
-const handleKeyUp = (event) => {
-  activeKeys.value[event.key.toLowerCase()] = false;
-};
-
-const speed = 0.9;
-
-const updatePosition = () => {
   let newX = position.x;
   let newY = position.y;
 
-  if (activeKeys.value['w']) {
-    switschSprite('up');
+  switch (event.key) {
+    case 'w':
+    case 'W':
+    switchSprite('up')
     newY -= speed;
-  }
-  if (activeKeys.value['s']) {
-    switschSprite('down');
+    break
+    case 's':
+    case'S':
+    switchSprite('down')
     newY += speed;
-  }
-  if (activeKeys.value['a']) {
-    switschSprite('left');
+    break
+    case 'a':
+    case'A':
+    switchSprite('left')
     newX -= speed;
-  }
-  if (activeKeys.value['d']) {
-    switschSprite('right');
+    break
+    case 'd':
+    case 'D':
+    switchSprite('right')
     newX += speed;
+    break;
+    case '1':
+      if (props.hasGun) {
+        props.shootBullet(position, props.direction); // Shoot a bullet
+      }
+      break;
   }
-
-  if (!props.checkCollision(newX, newY, 50, 50)) {
+  if(!props.checkCollision(newX, newY, 50, 50)) {
     position.x = newX;
     position.y = newY;
   }
 
-  requestAnimationFrame(updatePosition);
-};
+  checkObjectPickup();
+}
 
+// Add event listener on mounted and remove on unmounted
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyDown);
-  window.addEventListener('keyup', handleKeyUp);
-  requestAnimationFrame(updatePosition);
-});
+  window.addEventListener('keydown', handleKeyDown),
+  switchSprite(props.direction);
+})
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyDown);
-  window.removeEventListener('keyup', handleKeyUp);
-});
+  window.addEventListenerr('keydown', handleKeyDown)
+})
 
 /*  onMounted(() => {
 
