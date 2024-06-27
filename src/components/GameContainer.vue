@@ -222,10 +222,7 @@ let updateMonster = false;
 setInterval(() => {
   currentTick.value++;
   updateMonster = sendMonsterUpdate(updateMonster);
-  // moveMonsters(monsters, playerData);
-  // emit('update-monsters', playerData);
   // updateCameraTransform();
-  checkObjectPickup();
 }, 100);
 
 let monsters = reactive([

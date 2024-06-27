@@ -68,58 +68,55 @@ watch([() => props.direction, () => props.hasGun], ([newDirection]) => {
 
 
 //Handle keydown events
+const activeKeys = ref({});
 const handleKeyDown = (event) => {
-  const speed = 10;
-  // const containerRight = gameContainer().right;
-  // const containerBottom = props.gameContainer.bottom;
-
+  activeKeys.value[event.key.toLowerCase()] = true;
+};
+const handleKeyUp = (event) => {
+  activeKeys.value[event.key.toLowerCase()] = false;
+};
+const speed = 0.9;
+const updatePosition = () => {
   let newX = position.x;
   let newY = position.y;
-
-  switch (event.key) {
-    case 'w':
-    case 'W':
-    switchSprite('up')
+  if (activeKeys.value['w']) {
+    switchSprite('up');
     newY -= speed;
-    break
-    case 's':
-    case'S':
-    switchSprite('down')
-    newY += speed;
-    break
-    case 'a':
-    case'A':
-    switchSprite('left')
-    newX -= speed;
-    break
-    case 'd':
-    case 'D':
-    switchSprite('right')
-    newX += speed;
-    break;
-    case '1':
-      if (props.hasGun) {
-        props.shootBullet(position, props.direction); // Shoot a bullet
-      }
-      break;
   }
-  if(!props.checkCollision(newX, newY, 50, 50)) {
+  if (activeKeys.value['s']) {
+    switchSprite('down');
+    newY += speed;
+  }
+  if (activeKeys.value['a']) {
+    switchSprite('left');
+    newX -= speed;
+  }
+  if (activeKeys.value['d']) {
+    switchSprite('right');
+    newX += speed;
+  }
+  if (activeKeys.value['f']) {
+    if (props.hasGun) {
+        props.shootBullet(position, props.direction); // Shoot 
+    }
+  }
+
+  if (!props.checkCollision(newX, newY, 50, 50)) {
     position.x = newX;
     position.y = newY;
   }
-
+  requestAnimationFrame(updatePosition);
   checkObjectPickup();
-}
-
-// Add event listener on mounted and remove on unmounted
+};
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyDown),
-  switchSprite(props.direction);
-})
-
+  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('keyup', handleKeyUp);
+  requestAnimationFrame(updatePosition);
+});
 onUnmounted(() => {
-  window.addEventListenerr('keydown', handleKeyDown)
-})
+  window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener('keyup', handleKeyUp);
+});
 
 /*  onMounted(() => {
 
