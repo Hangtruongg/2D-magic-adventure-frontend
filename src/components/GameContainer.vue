@@ -5,7 +5,6 @@
   <div
     class="game"
     tabindex="0"
-    @keydown="movePlayer"
     ref="gameContainer"
   >
 
@@ -21,7 +20,7 @@
     <!-- Render the monsters -->
     <div v-for="(monster, index) in monsters" :key="index">
       <template v-if="monster.health > 0">
-        <Monster :monsterData="monster" :initialPosition="monster.position" />
+        <Monster :monsterData="monster" :updateMonster="updateMonster" :playerData="playerData" :checkCollision="isCollision" :currentTick="currentTick"/>
       </template>
     </div>
 
@@ -200,88 +199,17 @@ const isCollision = (newX, newY, entityWidth, entityHeight) => {
   });
 };
 
-const moveMonsters = (monsters, playerData) => {
-  for (let i = 0; i < monsters.length; i++) {
-    let x = monsters[i].position.x;
-    let y = monsters[i].position.y;
-    let monsterSpeed = monsters[i].speed;
-    let playerPositionX = playerData.position.x;
-    let playerPositionY = playerData.position.y;
+const sendMonsterUpdate = (updateMonster) => {
+  return updateMonster = !updateMonster;
+}
 
-    let newX = x;
-    let newY = y;
-
-    if (x + monsterSpeed < playerPositionX) {
-      newX += monsterSpeed;
-    }
-    if (x - monsterSpeed > playerPositionX) {
-      newX -= monsterSpeed;
-    }
-    if (y + monsterSpeed < playerPositionY) {
-      newY += monsterSpeed;
-    }
-    if (y - monsterSpeed > playerPositionY) {
-      newY -= monsterSpeed;
-    }
-
-    const monsterWidth = 50;  // Assuming monster width is 50
-    const monsterHeight = 50; // Assuming monster height is 50
-
-    // Check X-axis movement
-    if (!isCollision(newX, y, monsterWidth, monsterHeight)) {
-      monsters[i].position.x = newX;
-    }
-
-    // Check Y-axis movement
-    if (!isCollision(x, newY, monsterWidth, monsterHeight)) {
-      monsters[i].position.y = newY;
-    }
-
-    // Handle case where both X and Y movements are blocked
-    if (isCollision(newX, y, monsterWidth, monsterHeight) && isCollision(x, newY, monsterWidth, monsterHeight)) {
-      // Simple collision avoidance: try moving in a different direction
-      let directions = [
-        { dx: monsterSpeed, dy: 0 },
-        { dx: -monsterSpeed, dy: 0 },
-        { dx: 0, dy: monsterSpeed },
-        { dx: 0, dy: -monsterSpeed }
-      ];
-
-      // Shuffle the directions array to introduce randomness
-      directions = directions.sort(() => Math.random() - 0.5);
-
-      for (let direction of directions) {
-        let tryX = x + direction.dx;
-        let tryY = y + direction.dy;
-        if (!isCollision(tryX, tryY, monsterWidth, monsterHeight)) {
-          monsters[i].position.x = tryX;
-          monsters[i].position.y = tryY;
-          break;
-        }
-      }
-    }
-
-    monsterAttackMelee(monsters[i], playerData);
-  }
-};
-
-const monsterAttackMelee = (monster, playerData) => {
-  if (
-    Math.abs(monster.position.x - playerData.position.x) <= monster.speed &&
-    Math.abs(monster.position.y - playerData.position.y) <= monster.speed &&
-    monster.lastAttack + monster.attackSpeed < currentTick.value
-  ) {
-    playerData.health -= monster.damage;
-    monster.lastAttack = currentTick.value;
-  }
-};
-
-
-
+let updateMonster = false;
 
 setInterval(() => {
   currentTick.value++;
-  moveMonsters(monsters, playerData);
+  updateMonster = sendMonsterUpdate(updateMonster);
+  // moveMonsters(monsters, playerData);
+  // emit('update-monsters', playerData);
   // updateCameraTransform();
   checkObjectPickup();
 }, 100);
