@@ -298,6 +298,7 @@ let monsters = reactive([
 
 monsters = monsters.filter((monster) => monster.health > 0);
 
+
 const handleWindowResize = () => {
   updateGameRect();
   adjustPlayerPosition();
@@ -326,6 +327,30 @@ const adjustPlayerPosition = () => {
 watch(playerData.position, () => {
   // updateCameraTransform();
 });
+
+const zoomIn = () => {
+  zoomLevel = Math.min(2, zoomLevel + 0.1);
+  updateCameraTransform();
+};
+
+const zoomOut = () => {
+  zoomLevel = Math.max(0.5, zoomLevel - 0.1);
+  updateCameraTransform();
+};
+
+// Drop a coin at the monster's position after it dies
+const dropCoin = (monsterPosition) => {
+  objects.push({
+    type: 'coin',
+    position: { ...monsterPosition },
+    collected: false,
+  });
+};
+
+// Handle monster death
+const handleMonsterDeath = (monster) => {
+  dropCoin(monster.position);
+};
 
 // shootimage is for the bullet direction base on the direction of the character
 // this bullet's direction function is not working yet
@@ -380,10 +405,15 @@ const moveBullets = () => {
       if (monster.health > 0 && checkCollision(bullet.position, monster.position, 10, 50)) {
         monster.health -= 25; // Adjust bullet damage as needed
         bullets.splice(bullet); // Remove bullet after hit
+        if (monster.health <= 0) {
+          handleMonsterDeath(monster);
+        }
       }
     });
   });
 };
+
+
 
 
 </script>
