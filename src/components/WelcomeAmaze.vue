@@ -22,6 +22,9 @@ export default {
     navigateToRegister() {
       this.$router.push('/register');
     },
+    navigateToAbout() {
+      this.$router.push('/aboutAmaze');
+    },
     playAudio() {
       const audio = this.$refs.music;
       audio.play();
@@ -57,7 +60,7 @@ onMounted(() => {
 
 <template>
   <div id ="nav-bar">
-      <span id="about" onclick="aboutIcon()" class="material-symbol-outlined">About A-maze</span>
+      <span id="about" @click="navigateToAbout" class="material-symbol-outlined">About A-maze</span>
       <span id="new" onclick="newIcon()" class="material-symbol-outlined">News</span>
       <span id="creative" onclick="creativeIcon()" class="material-symbol-outlined">Creative</span>
       <button class="signUpButton" @click="navigateToSignUp">Sign Up</button>

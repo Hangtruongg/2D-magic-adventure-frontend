@@ -46,6 +46,8 @@
 
     <div class="health-display">Health: {{ playerData.health }}</div>
     <div class="coin-display">Coins: {{ playerData.collectedCoins }}</div>
+    
+    <button class="exitButton"  @click="navigateToHomePage">Exit game</button>
   </div>
 
 
@@ -57,12 +59,19 @@ import Player from './Player.vue';
 import Monster from './Monster.vue';
 import Tile from './Tile.vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 // import levelData from './levelData.json';
 
 const gameContainer = ref(null);
 const cameraContainer = ref(null);
 const gameRect = ref(null);
 const zoomLevel = 1;
+
+const router = useRouter();
+
+const navigateToHomePage =() => {
+  router.push({name: 'home'});
+}
 
 onMounted(() => {
   updateKeybinds();
@@ -137,12 +146,31 @@ const playerData = reactive({
   // image:'/assets/character/George_down.png'
 });
 
+// Computed property to check if player health is zero or below
+const isPlayerDead = computed(() => {
+  return playerData.health <= 0;
+});
+
+// Watch for changes in isPlayerDead computed property
+watch(isPlayerDead, (dead) => {
+  if (dead) {
+    navigateToDeathScreen(); // Navigate to death screen if player is dead
+  }
+});
+
+// Function to navigate to the death screen
+const navigateToDeathScreen = () => {
+  router.push({ name: 'deathscreen' }); // Navigate to the DeathScreen
+};
+
 const getObjectImagePath = (type) => {
   switch (type) {
     case 'gun':
-      return '/assets/object/gun1.png';
+      return '/assets/object/gun_left.png';
     case 'coin':
       return '/assets/object/coin.png';
+    case 'kevin':
+      return 'assets/character/kevin_left.png'
     // default:
     //   return '/assets/object/default.png'; // default image if type does not match
   }
@@ -171,6 +199,17 @@ const objects = reactive([
 {type:'coin', position: { x: 1000, y: 20 }, collected: false },
 {type:'coin', position: { x: 900, y: 20 }, collected: false },
 {type:'coin', position: { x: 950, y: 20 }, collected: false },
+{type:'coin', position: { x: 550, y: 200 }, collected: false },
+{type:'coin', position: { x: 600, y: 200 }, collected: false },
+{type:'coin', position: { x: 950, y: 500 }, collected: false },
+{type:'coin', position: { x: 300, y: 480 }, collected: false },
+{type:'coin', position: { x: 250, y: 480 }, collected: false },
+{type:'coin', position: { x: 0, y: 130 }, collected: false },
+{type:'coin', position: { x: 200, y: 0 }, collected: false },
+{type:'coin', position: { x: 360, y: 150 }, collected: false },
+{type:'coin', position: { x: 1150, y: 350 }, collected: false },
+{type:'coin', position: { x: 1150, y: 320 }, collected: false },
+{type:'kevin', position: { x: 1150, y: 500 }, collected: false },
 
 
 //add more objects as needed
@@ -384,13 +423,17 @@ const moveBullets = () => {
 
 .gun {
   position: absolute;
-  width: 50px; /* Adjust size as needed */
-  height: 50px; /* Adjust size as needed */
+  width: 80px; /* Adjust size as needed */
+  height: 80px; /* Adjust size as needed */
   cursor: pointer; /* Optional: Change cursor to pointer when hovering */
 }
 
 .coin-display {
   left: 100px;
+  position:absolute;
+  bottom: 0;
+  left:300px;
+  color: white;
 }
 
 .object {
@@ -407,6 +450,19 @@ const moveBullets = () => {
   height: 1px;
 }
 
+.exitButton {
+  font-size: 14px;
+  box-shadow: 0px 0px 20px rgb(243, 127, 147);
+  border-radius: 12px;
+  background-color: pink;
+  padding: 10px 10px;
+  text-align: center;
+  margin: 5px 5px;
+  cursor: pointer;
+  position: absolute;
+  top: 680px;
+  left: 750px;
+}
 
 </style>
 

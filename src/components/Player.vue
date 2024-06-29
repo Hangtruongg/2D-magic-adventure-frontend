@@ -82,7 +82,7 @@ const handleKeyDown = (event) => {
 const handleKeyUp = (event) => {
   activeKeys.value[event.key.toLowerCase()] = false;
 };
-const speed = 0.9;
+const speed = 2.5;
 
 let lastDirection;
 

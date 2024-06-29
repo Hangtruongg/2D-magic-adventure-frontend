@@ -6,6 +6,7 @@ import Deathscreen from '@/components/Deathscreen.vue'
 import SignUp from '@/components/SignUp.vue'
 import Register from '@/components/Register.vue'
 import Settings from '@/components/Settings.vue'
+import AboutAmaze from '@/components/AboutAmaze.vue'
 import axios from 'axios';
 
 const router = createRouter({
@@ -43,6 +44,11 @@ const router = createRouter({
       name: 'settings',
       component: Settings,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/aboutAmaze',
+      name: 'aboutAmaze',
+      component: AboutAmaze,
     }
   ]
 })
