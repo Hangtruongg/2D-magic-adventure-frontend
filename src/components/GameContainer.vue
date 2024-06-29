@@ -69,6 +69,8 @@ const zoomLevel = 1;
 
 const router = useRouter();
 
+const requiredCoins = 5; // Number of coins required to move to the next level
+
 const navigateToHomePage =() => {
   router.push({name: 'home'});
 }
@@ -209,7 +211,7 @@ const objects = reactive([
 {type:'coin', position: { x: 360, y: 150 }, collected: false },
 {type:'coin', position: { x: 1150, y: 350 }, collected: false },
 {type:'coin', position: { x: 1150, y: 320 }, collected: false },
-{type:'kevin', position: { x: 1150, y: 500 }, collected: false },
+{type:'kevin', position: { x: 1250, y: 490 }, collected: false },
 
 
 //add more objects as needed
@@ -228,6 +230,8 @@ const pickupObject = (object) => {
   } else if (object.type === 'coin') {
     playerData.collectedCoins += 1;
     object.collected = true;
+  } else if (object.type === 'kevin') {
+    checkNextLevel(); // Check if player can proceed to the next level
   }
   // Add more conditions for other types of objects
 };
@@ -411,6 +415,21 @@ const moveBullets = () => {
       }
     });
   });
+};
+
+// Function to check if player can move to next level
+const checkNextLevel = () => {
+  if (playerData.collectedCoins >= requiredCoins) {
+    const kevin = objects.find(object => object.type === 'kevin');
+    if (kevin && checkCollision(playerData.position, kevin.position, 50, 50)) {
+      navigateToNextLevel();
+    }
+  }
+};
+
+// Function to navigate to the next level
+const navigateToNextLevel = () => {
+  router.push({ name: 'home' }); // Replace 'nextLevel' with the actual route name for your next level component
 };
 
 
