@@ -187,6 +187,8 @@ const loadTiles = async (level) => {
   try {
     const response = await axios.get(endpoint);
     tiles.value = response.data.tiles;
+    objects.splice(0, objects.length, ...response.data.objects)
+    console.log(objects.value)
   } catch (error) {
     console.error('Error fetching level data:', error);
   }
@@ -196,26 +198,28 @@ const loadTiles = async (level) => {
 //need to use this
 const tiles = ref([]);
 
-const objects = reactive([
-{type:'gun', position: { x: 1200, y: 20 }, collected: false },
-{type:'coin', position: { x: 1000, y: 20 }, collected: false },
-{type:'coin', position: { x: 900, y: 20 }, collected: false },
-{type:'coin', position: { x: 950, y: 20 }, collected: false },
-{type:'coin', position: { x: 550, y: 200 }, collected: false },
-{type:'coin', position: { x: 600, y: 200 }, collected: false },
-{type:'coin', position: { x: 950, y: 500 }, collected: false },
-{type:'coin', position: { x: 300, y: 480 }, collected: false },
-{type:'coin', position: { x: 250, y: 480 }, collected: false },
-{type:'coin', position: { x: 0, y: 130 }, collected: false },
-{type:'coin', position: { x: 200, y: 0 }, collected: false },
-{type:'coin', position: { x: 360, y: 150 }, collected: false },
-{type:'coin', position: { x: 1150, y: 350 }, collected: false },
-{type:'coin', position: { x: 1150, y: 320 }, collected: false },
-{type:'kevin', position: { x: 1250, y: 490 }, collected: false },
+const objects = reactive([])
+
+// const objects = reactive([
+// {type:'gun', position: { x: 1200, y: 20 }, collected: false },
+// {type:'coin', position: { x: 1000, y: 20 }, collected: false },
+// {type:'coin', position: { x: 900, y: 20 }, collected: false },
+// {type:'coin', position: { x: 950, y: 20 }, collected: false },
+// {type:'coin', position: { x: 550, y: 200 }, collected: false },
+// {type:'coin', position: { x: 600, y: 200 }, collected: false },
+// {type:'coin', position: { x: 950, y: 500 }, collected: false },
+// {type:'coin', position: { x: 300, y: 480 }, collected: false },
+// {type:'coin', position: { x: 250, y: 480 }, collected: false },
+// {type:'coin', position: { x: 0, y: 130 }, collected: false },
+// {type:'coin', position: { x: 200, y: 0 }, collected: false },
+// {type:'coin', position: { x: 360, y: 150 }, collected: false },
+// {type:'coin', position: { x: 1150, y: 350 }, collected: false },
+// {type:'coin', position: { x: 1150, y: 320 }, collected: false },
+// {type:'kevin', position: { x: 1250, y: 490 }, collected: false },
 
 
-//add more objects as needed
-]);
+// //add more objects as needed
+// ]);
 
 // Computed property to filter out collected objects
 const uncollectedObjects = computed(() => objects.filter(object => !object.collected));
@@ -429,7 +433,8 @@ const checkNextLevel = () => {
 
 // Function to navigate to the next level
 const navigateToNextLevel = () => {
-  router.push({ name: 'home' }); // Replace 'nextLevel' with the actual route name for your next level component
+  // router.push({ name: 'home' }); // Replace 'nextLevel' with the actual route name for your next level component
+  loadTiles("levelData2.json");
 };
 
 
