@@ -118,6 +118,11 @@ const loadPlayerData = async () => {
       }
       else {
         playerData.currentLevel = "levelData1.json"
+        const endpointPost = `${baseUrl}/savePlayerData`;
+        const payload = {
+          "currentLevel": "levelData1.json"
+        }
+        axios.post(endpointPost, payload)
       }
     }
   } catch (error) {
