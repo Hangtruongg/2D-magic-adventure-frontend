@@ -78,7 +78,8 @@ const zoomLevel = 1;
 
 const router = useRouter();
 
-const requiredCoins = 2; // Number of coins required to move to the next level
+const requiredCoins = 10; // Number of coins required to move to the next level
+const requiredCoins2 = 30;
 
 const navigateToHomePage =() => {
   router.push({name: 'home'});
@@ -472,7 +473,7 @@ const navigateToNextLevel = () => {
     playerData.currentLevel = 2; // Update current level to 2
   }
   const kevin = objects.find(object => object.type === 'kevin');
-  if (playerData.collectedCoins >= requiredCoins && kevin && checkCollision(playerData.position, kevin.position, 50, 50)) {
+  if (playerData.collectedCoins >= requiredCoins2 && kevin && checkCollision(playerData.position, kevin.position, 50, 50)) {
     navigateToWinScreen(); // If in level 2 and meets Kevin with required coins, win the game
   }
 };
@@ -542,6 +543,37 @@ const spawnMonster = () => {
 
 // Call spawnMonster function every 10 seconds
 setInterval(spawnMonster, 5000);
+
+const spawnGun = () => {
+  if (playerData.hasGun) return; // Exit if player already has a gun
+
+  if (nonCollidableTiles.value.length === 0) return;
+
+  const randomIndex = Math.floor(Math.random() * nonCollidableTiles.value.length);
+  const spawnTile = nonCollidableTiles.value[randomIndex];
+
+  // Check if there's already a gun at the spawnTile position
+  const existingGun = objects.find(object => object.type === 'gun' && object.position.x === spawnTile.position.x && object.position.y === spawnTile.position.y);
+  
+  if (!existingGun) {
+    const newGun = {
+      type: 'gun',
+      position: { x: spawnTile.position.x, y: spawnTile.position.y },
+    };
+    objects.push(newGun);
+  }
+};
+
+// // Call spawnMonster function every 10 seconds
+// setInterval(spawnMonster, 5000);
+
+// const checkRegenerateGun = () => {
+//   if (!playerData.hasGun) { // Only regenerate if player does not have a gun
+//     spawnGun(); // Call the spawnGun function to regenerate the gun
+//   }
+// };
+
+setInterval(spawnGun, 20000);
 
 
 
