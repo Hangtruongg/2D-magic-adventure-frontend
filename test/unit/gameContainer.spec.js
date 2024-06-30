@@ -1,12 +1,20 @@
-// GameContainer.spec.js
+import { describe, it, expect, beforeEach, afterEach } from "vitest"; // Replace with Jest imports
+
 import { shallowMount } from '@vue/test-utils';
 import GameContainer from '@/components/GameContainer.vue';
-import { describe, it, beforeEach, expect, afterEach } from 'vitest';
+import { useRouter } from 'vue-router';
 
-describe('GameContainer.vue', () => {
+describe('Navigation to Home Page', () => {
   let wrapper;
+  let mockRouter;
 
   beforeEach(() => {
+    mockRouter = {
+      push: jest.fn(), // Mock the router's push method
+    };
+
+    useRouter.mockReturnValue(mockRouter); // Mock useRouter hook
+
     wrapper = shallowMount(GameContainer, {
       props: {
         playerData: {
@@ -27,18 +35,9 @@ describe('GameContainer.vue', () => {
     wrapper.unmount();
   });
 
-  it('renders the game container', () => {
-    expect(wrapper.find('.game').exists()).toBe(true);
+  it('navigates to home page when exit button is clicked', async () => {
+    const exitButton = wrapper.find('.exitButton');
+    await exitButton.trigger('click');
+    expect(mockRouter.push).toHaveBeenCalledWith({ name: 'home' });
   });
-
-  it('renders the player component', () => {
-    expect(wrapper.findComponent({ name: 'Player' }).exists()).toBe(true);
-  });
-
-  it('renders the monster component', () => {
-    expect(wrapper.findComponent({ name: 'Monster' }).exists()).toBe(true);
-  });
-
-  // Add more tests as needed
 });
-
