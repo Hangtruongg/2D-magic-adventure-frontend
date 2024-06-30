@@ -260,6 +260,7 @@ img{
   border-radius: 10px;
   margin-bottom: 20px;
   margin: 0 auto;
+  margin-top: 250px;
 }
 
 .heading{
@@ -267,7 +268,7 @@ img{
   font-size: 60px;
   animation: changeColor 5s infinite;
   margin: 30px;
-  
+
 }
 
 
@@ -302,6 +303,7 @@ img{
   text-align: center;
   margin: 0 200px;
   cursor: pointer;
+  margin-left: 480px;
 }
 
 .startButton:hover {
