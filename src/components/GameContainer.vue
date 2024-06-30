@@ -89,18 +89,41 @@ const navigateToWinScreen =() => {
   router.push({name:'winScreen'});
 }
 
-onMounted(() => {
-  updateKeybinds();
-  updateGameRect();
-  window.addEventListener('resize', handleWindowResize);
-  // updateCameraTransform();
-});
+// onMounted(() => {
+//   loadPlayerData;
+//   updateKeybinds();
+//   updateGameRect();
+//   window.addEventListener('resize', handleWindowResize);
+//   // updateCameraTransform();
+// });
 onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize);
   if (playerData.gunTimer) {
     clearTimeout(playerData.gunTimer);
   }
 });
+
+const loadPlayerData = async () => {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+  const endpoint = `${baseUrl}/getPlayerData`;
+  try {
+    console.log("HEY")
+    const playerDataResponse = await axios.get(endpoint);
+    console.log(playerDataResponse)
+    if(playerDataResponse.status === 200) {
+      if(playerDataResponse.data.currentLevel !== null && playerDataResponse.data.currentLevel !== '') {
+        console.log("hey" + playerDataResponse.data.currentLevel)
+        playerData.currentLevel = playerDataResponse.data.currentLevel;
+        console.log("hello" + playerData.currentLevel)
+      }
+      else {
+        playerData.currentLevel = "levelData1.json"
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching playerData:', error);
+  }
+}
 
 const updateKeybinds = async () => {
   const keybindings = localStorage.getItem('keybinds');
@@ -146,14 +169,23 @@ const updateCameraTransform = () => {
 onMounted(() => {
   gameContainer.value = document.querySelector('.game');
   updateGameRect();
-  loadTiles("levelData1.json");
+  updateKeybinds();
+  // loadPlayerData();
+  // loadTiles(playerData.currentLevel);
+  handleInit();
   window.addEventListener('resize', handleWindowResize);
   setInterval(moveBullets, 1000 / 60); // Move bullets every frame
+  // updateCameraTransform();
 });
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize);
 });
+
+const handleInit = async () => {
+  await loadPlayerData();
+  await loadTiles(playerData.currentLevel)
+}
 
 // Reactive object to store player position
 const playerData = reactive({
@@ -163,7 +195,6 @@ const playerData = reactive({
   hasGun: false,
   collectedCoins:0,
   gunTimer:null,
-  currentLevel:1,// track current level
 });
 
 // Computed property to check if player health is zero or below
