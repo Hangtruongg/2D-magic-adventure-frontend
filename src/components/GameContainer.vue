@@ -57,7 +57,6 @@
     <div class="coin-display">Coins: {{ playerData.collectedCoins }}</div>
     
     <button class="exitButton"  @click="navigateToHomePage">Exit game</button>
-    <button class="settingButton"  @click="navigateToSetting">Key Setting</button>
   </div>
 
 
@@ -79,8 +78,8 @@ const zoomLevel = 1;
 
 const router = useRouter();
 
-const requiredCoins = 2; // Number of coins required to move to the next level
-const requiredCoins2 = 5;
+const requiredCoins = 10; // Number of coins required to move to the next level
+const requiredCoins2 = 30;
 
 const navigateToHomePage =() => {
   router.push({name: 'home'});
@@ -90,22 +89,46 @@ const navigateToWinScreen =() => {
   router.push({name:'winScreen'});
 }
 
-const navigateToSetting = () => {
-  router.push({name:'settings'})
-}
-
-onMounted(() => {
-  updateKeybinds();
-  updateGameRect();
-  window.addEventListener('resize', handleWindowResize);
-  // updateCameraTransform();
-});
+// onMounted(() => {
+//   loadPlayerData;
+//   updateKeybinds();
+//   updateGameRect();
+//   window.addEventListener('resize', handleWindowResize);
+//   // updateCameraTransform();
+// });
 onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize);
   if (playerData.gunTimer) {
     clearTimeout(playerData.gunTimer);
   }
 });
+
+const loadPlayerData = async () => {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+  const endpoint = `${baseUrl}/getPlayerData`;
+  try {
+    console.log("HEY")
+    const playerDataResponse = await axios.get(endpoint);
+    console.log(playerDataResponse)
+    if(playerDataResponse.status === 200) {
+      if(playerDataResponse.data.currentLevel !== null && playerDataResponse.data.currentLevel !== '') {
+        console.log("hey" + playerDataResponse.data.currentLevel)
+        playerData.currentLevel = playerDataResponse.data.currentLevel;
+        console.log("hello" + playerData.currentLevel)
+      }
+      else {
+        playerData.currentLevel = "levelData1.json"
+        const endpointPost = `${baseUrl}/savePlayerData`;
+        const payload = {
+          "currentLevel": "levelData1.json"
+        }
+        axios.post(endpointPost, payload)
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching playerData:', error);
+  }
+}
 
 const updateKeybinds = async () => {
   const keybindings = localStorage.getItem('keybinds');
@@ -151,14 +174,23 @@ const updateCameraTransform = () => {
 onMounted(() => {
   gameContainer.value = document.querySelector('.game');
   updateGameRect();
-  loadTiles("levelData1.json");
+  updateKeybinds();
+  // loadPlayerData();
+  // loadTiles(playerData.currentLevel);
+  handleInit();
   window.addEventListener('resize', handleWindowResize);
   setInterval(moveBullets, 1000 / 60); // Move bullets every frame
+  // updateCameraTransform();
 });
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize);
 });
+
+const handleInit = async () => {
+  await loadPlayerData();
+  await loadTiles(playerData.currentLevel)
+}
 
 // Reactive object to store player position
 const playerData = reactive({
@@ -168,7 +200,6 @@ const playerData = reactive({
   hasGun: false,
   collectedCoins:0,
   gunTimer:null,
-  currentLevel:1,// track current level
 });
 
 // Computed property to check if player health is zero or below
@@ -476,12 +507,11 @@ const navigateToNextLevel = () => {
   if (playerData.currentLevel === 1) {
     loadTiles("levelData2.json");
     playerData.currentLevel = 2; // Update current level to 2
-  } else if (playerData.currentLevel === 2 && playerData.collectedCoins >= requiredCoins2) {
+  }
   const kevin = objects.find(object => object.type === 'kevin');
-  if (playerData.collectedCoins >= requiredCoins && kevin && checkCollision(playerData.position, kevin.position, 50, 50)) {
+  if (playerData.collectedCoins >= requiredCoins2 && kevin && checkCollision(playerData.position, kevin.position, 50, 50)) {
     navigateToWinScreen(); // If in level 2 and meets Kevin with required coins, win the game
   }
-}
 };
 
 
@@ -660,20 +690,6 @@ setInterval(spawnGun, 20000);
   position: absolute;
   top: 680px;
   left: 750px;
-}
-
-.settingButton {
-  font-size: 14px;
-  box-shadow: 0px 0px 20px rgb(243, 127, 147);
-  border-radius: 12px;
-  background-color: pink;
-  padding: 10px 10px;
-  text-align: center;
-  margin: 5px 5px;
-  cursor: pointer;
-  position: absolute;
-  top: 680px;
-  left: 900px;
 }
 
 .inventory {
