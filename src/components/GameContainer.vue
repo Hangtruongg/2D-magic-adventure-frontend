@@ -78,8 +78,8 @@ const zoomLevel = 1;
 
 const router = useRouter();
 
-const requiredCoins = 10; // Number of coins required to move to the next level
-const requiredCoins2 = 30;
+const requiredCoins = 2; // Number of coins required to move to the next level
+const requiredCoins2 = 5;
 
 const navigateToHomePage =() => {
   router.push({name: 'home'});
@@ -471,11 +471,12 @@ const navigateToNextLevel = () => {
   if (playerData.currentLevel === 1) {
     loadTiles("levelData2.json");
     playerData.currentLevel = 2; // Update current level to 2
-  }
+  } else if (playerData.currentLevel === 2 && playerData.collectedCoins >= requiredCoins2) {
   const kevin = objects.find(object => object.type === 'kevin');
-  if (playerData.collectedCoins >= requiredCoins2 && kevin && checkCollision(playerData.position, kevin.position, 50, 50)) {
+  if (playerData.collectedCoins >= requiredCoins && kevin && checkCollision(playerData.position, kevin.position, 50, 50)) {
     navigateToWinScreen(); // If in level 2 and meets Kevin with required coins, win the game
   }
+}
 };
 
 
