@@ -26,7 +26,8 @@ Right now the game includes 2 Levels for the player to play.
 
 ## Part1: How to play the game
 
-- The player first need to register (when not have an account) or login (when already have an account)
+- The player first needs to register (when not have an account) or login (when already have an account)
+- NOTE: 3rd party cookies need to be enabled if being backend and frontend are hosted on different domains
 
 - After login or register succesfully, the player will be pushed to the homepage page, where he/she can read about A-maze or start to play the game (start Game Button)
 
@@ -53,7 +54,7 @@ The welcome homepage is the first screen players see when they launch A-maze. It
 ### User Authentication
 New players can create an account using the sign-up page. This page collects necessary information such as username, password, and email to register users securely.
 
-Login Page
+### Login Page
 Returning players can log in using the login page. This page validates user credentials and provides access to their game progress and settings.
 
 ### Settings Page for Key Configuration
@@ -65,4 +66,5 @@ The game features dynamic background images that change depending on the level o
 ### Router Setup for Seamless Navigation
 A-maze utilizes Vue Router for seamless navigation between different pages and components. This setup ensures smooth transitions and maintains the game state as players move between the homepage, game screen, settings page, and authentication pages.
 
-
+##BACKEND
+https://github.com/MassimoMarsiglia/webtech-projekt

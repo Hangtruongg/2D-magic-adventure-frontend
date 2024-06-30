@@ -57,6 +57,7 @@
     <div class="coin-display">Coins: {{ playerData.collectedCoins }}</div>
     
     <button class="exitButton"  @click="navigateToHomePage">Exit game</button>
+    <button class="settingsButton"  @click="navigateToSettings">Settings</button>
   </div>
 
 
@@ -82,6 +83,10 @@ let requiredCoins; // Number of coins required to move to the next level
 
 const navigateToHomePage =() => {
   router.push({name: 'home'});
+}
+
+const navigateToSettings =() => {
+  router.push({name: 'settings'});
 }
 
 const navigateToWinScreen =() => {
@@ -706,6 +711,21 @@ setInterval(spawnGun, 20000);
   top: 680px;
   left: 750px;
 }
+
+.settingsButton {
+  font-size: 14px;
+  box-shadow: 0px 0px 20px rgb(243, 127, 147);
+  border-radius: 12px;
+  background-color: pink;
+  padding: 10px 10px;
+  text-align: center;
+  margin: 5px 5px;
+  cursor: pointer;
+  position: absolute;
+  top: 680px;
+  left: 650px;
+}
+
 
 .inventory {
   position: absolute;
