@@ -41,6 +41,15 @@
         <!-- <Player :checkObjectPickup="pickupObject"/> -->
         <img :src="getObjectImagePath(object.type)" :alt="object.type" />
       </div>
+
+      <!-- <div class="inventory">
+      <h2>Inventory</h2>
+      <div v-for="(item, index) in playerInventory" :key="index">
+        <p>{{ item.name }}</p>
+        <button @click="useItem(item)">Use</button>
+      </div>
+    </div>
+    <button @click="togglePauseGame">{{ gamePaused ? 'Resume' : 'Pause' }}</button> -->
     
   </div>
 
@@ -69,7 +78,7 @@ const zoomLevel = 1;
 
 const router = useRouter();
 
-const requiredCoins = 5; // Number of coins required to move to the next level
+const requiredCoins = 30; // Number of coins required to move to the next level
 
 const navigateToHomePage =() => {
   router.push({name: 'home'});
@@ -172,7 +181,9 @@ const getObjectImagePath = (type) => {
     case 'coin':
       return '/assets/object/coin.png';
     case 'kevin':
-      return 'assets/character/kevin_left.png'
+      return '/assets/character/kevin_left.png';
+    case 'healthPotion':
+      return '/assets/object/health_potion.png';
     // default:
     //   return '/assets/object/default.png'; // default image if type does not match
   }
@@ -198,24 +209,23 @@ const loadTiles = async (level) => {
 //need to use this
 const tiles = ref([]);
 
-const objects = reactive([])
-
-// const objects = reactive([
-// {type:'gun', position: { x: 1200, y: 20 }, collected: false },
-// {type:'coin', position: { x: 1000, y: 20 }, collected: false },
-// {type:'coin', position: { x: 900, y: 20 }, collected: false },
-// {type:'coin', position: { x: 950, y: 20 }, collected: false },
-// {type:'coin', position: { x: 550, y: 200 }, collected: false },
-// {type:'coin', position: { x: 600, y: 200 }, collected: false },
-// {type:'coin', position: { x: 950, y: 500 }, collected: false },
-// {type:'coin', position: { x: 300, y: 480 }, collected: false },
-// {type:'coin', position: { x: 250, y: 480 }, collected: false },
-// {type:'coin', position: { x: 0, y: 130 }, collected: false },
-// {type:'coin', position: { x: 200, y: 0 }, collected: false },
-// {type:'coin', position: { x: 360, y: 150 }, collected: false },
-// {type:'coin', position: { x: 1150, y: 350 }, collected: false },
-// {type:'coin', position: { x: 1150, y: 320 }, collected: false },
-// {type:'kevin', position: { x: 1250, y: 490 }, collected: false },
+const objects = reactive([
+{type:'gun', position: { x: 1200, y: 20 }, collected: false },
+{type:'coin', position: { x: 1000, y: 20 }, collected: false },
+{type:'coin', position: { x: 900, y: 20 }, collected: false },
+{type:'coin', position: { x: 950, y: 20 }, collected: false },
+{type:'coin', position: { x: 550, y: 200 }, collected: false },
+{type:'coin', position: { x: 600, y: 200 }, collected: false },
+{type:'coin', position: { x: 950, y: 500 }, collected: false },
+{type:'coin', position: { x: 300, y: 480 }, collected: false },
+{type:'coin', position: { x: 250, y: 480 }, collected: false },
+{type:'coin', position: { x: 0, y: 130 }, collected: false },
+{type:'coin', position: { x: 200, y: 0 }, collected: false },
+{type:'coin', position: { x: 360, y: 150 }, collected: false },
+{type:'coin', position: { x: 1150, y: 350 }, collected: false },
+{type:'coin', position: { x: 1150, y: 320 }, collected: false },
+{type:'kevin', position: { x: 1250, y: 490 }, collected: false },
+{type:'healthPotion', position: { x: 1000, y: 300 }, collected: false },
 
 
 // //add more objects as needed
@@ -236,6 +246,8 @@ const pickupObject = (object) => {
     object.collected = true;
   } else if (object.type === 'kevin') {
     checkNextLevel(); // Check if player can proceed to the next level
+  } else if (object.type === 'healthPotion') {
+    object.collected = true;
   }
   // Add more conditions for other types of objects
 };
@@ -336,15 +348,15 @@ watch(playerData.position, () => {
   // updateCameraTransform();
 });
 
-const zoomIn = () => {
-  zoomLevel = Math.min(2, zoomLevel + 0.1);
-  updateCameraTransform();
-};
+// const zoomIn = () => {
+//   zoomLevel = Math.min(2, zoomLevel + 0.1);
+//   updateCameraTransform();
+// };
 
-const zoomOut = () => {
-  zoomLevel = Math.max(0.5, zoomLevel - 0.1);
-  updateCameraTransform();
-};
+// const zoomOut = () => {
+//   zoomLevel = Math.max(0.5, zoomLevel - 0.1);
+//   updateCameraTransform();
+// };
 
 // Drop a coin at the monster's position after it dies
 const dropCoin = (monsterPosition) => {
@@ -438,7 +450,86 @@ const navigateToNextLevel = () => {
 };
 
 
+//Regenerate the health every 5 seconds
+const regenerateHealth = () => {
+  if (playerData.health < 100) {
+    playerData.health = Math.min(100, playerData.health + 1);
+  }
+};
 
+setInterval(regenerateHealth, 5000);
+
+//spawn enemy for every 10 seconds
+// const spawnEnemy = () => {
+//   const newEnemy = {
+//     position: { x: Math.random() * gameRect.value.width, y: Math.random() * gameRect.value.height },
+//     health: 50,
+//   };
+//   monsters.push(newEnemy);
+// };
+
+// setInterval(spawnEnemy, 10000);
+
+
+const addItemToInventory = (item) => {
+  playerInventory.push(item);
+};
+
+const useItem = (item) => {
+  const itemIndex = playerInventory.indexOf(item);
+  // if (itemIndex > -1) {
+  //   playerInventory.splice(itemIndex, 1);
+    if (item.type === 'healthPotion') {
+      playerData.health = Math.min(100, playerData.health + 30);
+    // }
+  }
+};
+
+//save and load game
+// const saveGameState = () => {
+//   const gameState = {
+//     playerData,
+//     playerInventory,
+//     monsters,
+//     objects,
+//   };
+//   localStorage.setItem('gameState', JSON.stringify(gameState));
+// };
+
+// const loadGameState = () => {
+//   const savedGameState = localStorage.getItem('gameState');
+//   if (savedGameState) {
+//     const gameState = JSON.parse(savedGameState);
+//     Object.assign(playerData, gameState.playerData);
+//     Object.assign(playerInventory, gameState.playerInventory);
+//     Object.assign(monsters, gameState.monsters);
+//     Object.assign(objects, gameState.objects);
+//   }
+// };
+// const gamePaused = ref(false);
+
+// const togglePauseGame = () => {
+//   gamePaused.value = !gamePaused.value;
+//   if (gamePaused.value) {
+//     clearInterval(gameLoop);
+//   } else {
+//     gameLoop = setInterval(gameUpdate, 1000 / 60);
+//   }
+// };
+
+// window.addEventListener('keydown', (event) => {
+//   if (event.key === 'm') {
+//     togglePauseGame();
+//   }
+// });
+
+
+// const playerInventory = reactive([
+//   { name: 'Health Potion', effect: () => { playerData.health = Math.min(playerData.health + 50, 100); } },
+// ]);
+
+
+// const gameLoop = setInterval(loadGameState, 1000 / 60);
 
 </script>
 
@@ -516,6 +607,16 @@ const navigateToNextLevel = () => {
   position: absolute;
   top: 680px;
   left: 750px;
+}
+
+.inventory {
+  position: absolute;
+  top: 10px;
+  left: 1300px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
 }
 
 </style>
