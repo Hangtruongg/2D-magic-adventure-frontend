@@ -1,7 +1,7 @@
 <template>
     <div id="container">
         <div id="buttons">
-            <h1>You win!</h1>
+            <h1>You Died!</h1>
             <button class = "deathScreenButton" @click="navigateToGame">Restart level</button>
             <button class = "deathScreenButton" @click="navigateToHome">Return to home page</button>
         </div>
@@ -22,7 +22,7 @@ export default {
 }
 </script>
 
-<style >
+<style>
 #container {
     display:flex;
 }
