@@ -84,6 +84,10 @@ const navigateToHomePage =() => {
   router.push({name: 'home'});
 }
 
+const navigateToWinScreen =() => {
+  router.push({name:'winScreen'});
+}
+
 onMounted(() => {
   updateKeybinds();
   updateGameRect();
@@ -92,6 +96,9 @@ onMounted(() => {
 });
 onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize);
+  if (playerData.gunTimer) {
+    clearTimeout(playerData.gunTimer);
+  }
 });
 
 const updateKeybinds = async () => {
@@ -154,7 +161,8 @@ const playerData = reactive({
   health: 100, 
   hasGun: false,
   collectedCoins:0,
-  // image:'/assets/character/George_down.png'
+  gunTimer:null,
+  currentLevel:1,// track current level
 });
 
 // Computed property to check if player health is zero or below
@@ -174,6 +182,18 @@ const navigateToDeathScreen = () => {
   router.push({ name: 'deathscreen' }); // Navigate to the DeathScreen
 };
 
+const startGunTimer = () => {
+  if (playerData.gunTimer) {
+    clearTimeout(playerData.gunTimer);
+  }
+  playerData.gunTimer = setTimeout(() => {
+    playerData.hasGun = false;
+    playerData.gunTimer = null;
+  }, 5000);
+};
+
+
+
 const getObjectImagePath = (type) => {
   switch (type) {
     case 'gun':
@@ -181,7 +201,7 @@ const getObjectImagePath = (type) => {
     case 'coin':
       return '/assets/object/coin.png';
     case 'kevin':
-      return '/assets/character/kevin_left.png';
+      return '/assets/character/kevin_down.png';
     case 'healthPotion':
       return '/assets/object/health_potion.png';
     // default:
@@ -191,19 +211,19 @@ const getObjectImagePath = (type) => {
 
 
 //need to use these
-const loadTiles = async (level) => {
-  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
-  const endpoint = `${baseUrl}/levelData?level=${level}`;
+// const loadTiles = async (level) => {
+//   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+//   const endpoint = `${baseUrl}/levelData?level=${level}`;
 
-  try {
-    const response = await axios.get(endpoint);
-    tiles.value = response.data.tiles;
-    objects.splice(0, objects.length, ...response.data.objects)
-    console.log(objects.value)
-  } catch (error) {
-    console.error('Error fetching level data:', error);
-  }
-};
+//   try {
+//     const response = await axios.get(endpoint);
+//     tiles.value = response.data.tiles;
+//     objects.splice(0, objects.length, ...response.data.objects)
+//     console.log(objects.value)
+//   } catch (error) {
+//     console.error('Error fetching level data:', error);
+//   }
+// };
 
 // let tiles = ref( levelData.tiles )
 //need to use this
@@ -245,6 +265,7 @@ const pickupObject = (object) => {
   } else if (object.type === 'coin') {
     playerData.collectedCoins += 1;
     object.collected = true;
+    checkNextLevel(); // check for level progression after picking up a coin
   } else if (object.type === 'kevin') {
     checkNextLevel(); // Check if player can proceed to the next level
   } else if (object.type === 'healthPotion') {
@@ -312,8 +333,8 @@ setInterval(() => {
 }, 100);
 
 let monsters = reactive([
-  { imagePath: '/assets/entity images/slime.png', position: { x: 900, y: 400 }, health: 55, speed: 4, damage: 2, attackSpeed: 3, lastAttack: 0, monsterType: "melee" },
-  { imagePath: '/assets/entity images/slime.png', position: { x: 1000, y: 150 }, health: 100, speed: 6, damage: 4, attackSpeed: 5, lastAttack: 0, monsterType: "ranged" }
+  // { imagePath: '/assets/entity images/slime.png', position: { x: 900, y: 400 }, health: 55, speed: 4, damage: 2, attackSpeed: 3, lastAttack: 0, monsterType: "melee" },
+  // { imagePath: '/assets/entity images/slime.png', position: { x: 1000, y: 150 }, health: 100, speed: 6, damage: 4, attackSpeed: 5, lastAttack: 0, monsterType: "ranged" }
   // Add more monsters as needed
 ]);
 
@@ -383,7 +404,6 @@ const shootBullet = (position, direction) => {
     left: '/assets/object/bullet_left.png',
     right: '/assets/object/bullet_right.png',
   };
-  // bullet's direction fuction is not working yet
   const bullet = {
     position: { x: position.x, y: position.y },
     direction,
@@ -392,6 +412,7 @@ const shootBullet = (position, direction) => {
   };
 
   bullets.push(bullet);
+  startGunTimer();
 };
 
 const bullets = reactive([]);
@@ -446,8 +467,14 @@ const checkNextLevel = () => {
 
 // Function to navigate to the next level
 const navigateToNextLevel = () => {
-  // router.push({ name: 'home' }); // Replace 'nextLevel' with the actual route name for your next level component
-  loadTiles("levelData2.json");
+  if (playerData.currentLevel === 1) {
+    loadTiles("levelData2.json");
+    playerData.currentLevel = 2; // Update current level to 2
+  }
+  const kevin = objects.find(object => object.type === 'kevin');
+  if (playerData.collectedCoins >= requiredCoins && kevin && checkCollision(playerData.position, kevin.position, 50, 50)) {
+    navigateToWinScreen(); // If in level 2 and meets Kevin with required coins, win the game
+  }
 };
 
 
@@ -470,6 +497,51 @@ setInterval(regenerateHealth, 5000);
 // };
 
 // setInterval(spawnEnemy, 10000);
+
+const nonCollidableTiles = ref([]);
+
+const loadTiles = async (level) => {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+  const endpoint = `${baseUrl}/levelData?level=${level}`;
+
+  try {
+    const response = await axios.get(endpoint);
+    tiles.value = response.data.tiles;
+    objects.splice(0, objects.length, ...response.data.objects);
+
+    // Populate the non-collidable tiles list
+    nonCollidableTiles.value = tiles.value.filter(tile => !tile.collision);
+
+    console.log(objects.value);
+  } catch (error) {
+    console.error('Error fetching level data:', error);
+  }
+};
+
+const spawnMonster = () => {
+  if (nonCollidableTiles.value.length === 0) return;
+
+  // Randomly select a tile
+  const randomIndex = Math.floor(Math.random() * nonCollidableTiles.value.length);
+  const spawnTile = nonCollidableTiles.value[randomIndex];
+
+  // Create a new monster at the selected tile's position
+  const newMonster = {
+    imagePath: '/assets/entity images/slime.png',
+    position: { x: spawnTile.position.x, y: spawnTile.position.y },
+    health: 50,
+    speed: 4,
+    damage: 2,
+    attackSpeed: 3,
+    lastAttack: 0,
+    monsterType: "melee"
+  };
+
+  monsters.push(newMonster);
+};
+
+// Call spawnMonster function every 10 seconds
+setInterval(spawnMonster, 5000);
 
 
 

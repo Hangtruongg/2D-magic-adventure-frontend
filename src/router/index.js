@@ -7,6 +7,7 @@ import SignUp from '@/components/SignUp.vue'
 import Register from '@/components/Register.vue'
 import Settings from '@/components/Settings.vue'
 import AboutAmaze from '@/components/AboutAmaze.vue'
+import WinScreen from '@/components/WinScreen.vue';
 import axios from 'axios';
 
 const router = createRouter({
@@ -49,6 +50,11 @@ const router = createRouter({
       path: '/aboutAmaze',
       name: 'aboutAmaze',
       component: AboutAmaze,
+    },
+    {
+      path: '/winscreen',
+      name: 'winScreen',
+      component: WinScreen,
     }
   ]
 })
