@@ -57,6 +57,7 @@
     <div class="coin-display">Coins: {{ playerData.collectedCoins }}</div>
     
     <button class="exitButton"  @click="navigateToHomePage">Exit game</button>
+    <button class="settingButton"  @click="navigateToSetting">Key Setting</button>
   </div>
 
 
@@ -87,6 +88,10 @@ const navigateToHomePage =() => {
 
 const navigateToWinScreen =() => {
   router.push({name:'winScreen'});
+}
+
+const navigateToSetting = () => {
+  router.push({name:'settings'})
 }
 
 onMounted(() => {
@@ -655,6 +660,20 @@ setInterval(spawnGun, 20000);
   position: absolute;
   top: 680px;
   left: 750px;
+}
+
+.settingButton {
+  font-size: 14px;
+  box-shadow: 0px 0px 20px rgb(243, 127, 147);
+  border-radius: 12px;
+  background-color: pink;
+  padding: 10px 10px;
+  text-align: center;
+  margin: 5px 5px;
+  cursor: pointer;
+  position: absolute;
+  top: 680px;
+  left: 900px;
 }
 
 .inventory {

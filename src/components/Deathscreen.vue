@@ -43,8 +43,7 @@ cursor: pointer;
 h1 {
   font-size: 60px;
   animation: changeColor 5s infinite;
-  margin-top: 250px;
-  margin-left: 480px;
+  
 }
 
 
