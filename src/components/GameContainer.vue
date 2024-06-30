@@ -78,7 +78,7 @@ const zoomLevel = 1;
 
 const router = useRouter();
 
-const requiredCoins = 30; // Number of coins required to move to the next level
+const requiredCoins = 2; // Number of coins required to move to the next level
 
 const navigateToHomePage =() => {
   router.push({name: 'home'});
@@ -149,7 +149,7 @@ onUnmounted(() => {
 
 // Reactive object to store player position
 const playerData = reactive({
-  position: { x: 900, y: 160 },
+  position: { x: 900, y: 450 },
   direction:'down',
   health: 100, 
   hasGun: false,
@@ -209,23 +209,24 @@ const loadTiles = async (level) => {
 //need to use this
 const tiles = ref([]);
 
-const objects = reactive([
-{type:'gun', position: { x: 1200, y: 20 }, collected: false },
-{type:'coin', position: { x: 1000, y: 20 }, collected: false },
-{type:'coin', position: { x: 900, y: 20 }, collected: false },
-{type:'coin', position: { x: 950, y: 20 }, collected: false },
-{type:'coin', position: { x: 550, y: 200 }, collected: false },
-{type:'coin', position: { x: 600, y: 200 }, collected: false },
-{type:'coin', position: { x: 950, y: 500 }, collected: false },
-{type:'coin', position: { x: 300, y: 480 }, collected: false },
-{type:'coin', position: { x: 250, y: 480 }, collected: false },
-{type:'coin', position: { x: 0, y: 130 }, collected: false },
-{type:'coin', position: { x: 200, y: 0 }, collected: false },
-{type:'coin', position: { x: 360, y: 150 }, collected: false },
-{type:'coin', position: { x: 1150, y: 350 }, collected: false },
-{type:'coin', position: { x: 1150, y: 320 }, collected: false },
-{type:'kevin', position: { x: 1250, y: 490 }, collected: false },
-{type:'healthPotion', position: { x: 1000, y: 300 }, collected: false },
+const objects = reactive([])
+
+// const objects = reactive([
+// {type:'gun', position: { x: 1200, y: 20 }, collected: false },
+// {type:'coin', position: { x: 1000, y: 20 }, collected: false },
+// {type:'coin', position: { x: 900, y: 20 }, collected: false },
+// {type:'coin', position: { x: 950, y: 20 }, collected: false },
+// {type:'coin', position: { x: 550, y: 200 }, collected: false },
+// {type:'coin', position: { x: 600, y: 200 }, collected: false },
+// {type:'coin', position: { x: 950, y: 500 }, collected: false },
+// {type:'coin', position: { x: 300, y: 480 }, collected: false },
+// {type:'coin', position: { x: 250, y: 480 }, collected: false },
+// {type:'coin', position: { x: 0, y: 130 }, collected: false },
+// {type:'coin', position: { x: 200, y: 0 }, collected: false },
+// {type:'coin', position: { x: 360, y: 150 }, collected: false },
+// {type:'coin', position: { x: 1150, y: 350 }, collected: false },
+// {type:'coin', position: { x: 1150, y: 320 }, collected: false },
+// {type:'kevin', position: { x: 1250, y: 490 }, collected: false },
 
 
 // //add more objects as needed
@@ -471,65 +472,7 @@ setInterval(regenerateHealth, 5000);
 // setInterval(spawnEnemy, 10000);
 
 
-const addItemToInventory = (item) => {
-  playerInventory.push(item);
-};
 
-const useItem = (item) => {
-  const itemIndex = playerInventory.indexOf(item);
-  // if (itemIndex > -1) {
-  //   playerInventory.splice(itemIndex, 1);
-    if (item.type === 'healthPotion') {
-      playerData.health = Math.min(100, playerData.health + 30);
-    // }
-  }
-};
-
-//save and load game
-// const saveGameState = () => {
-//   const gameState = {
-//     playerData,
-//     playerInventory,
-//     monsters,
-//     objects,
-//   };
-//   localStorage.setItem('gameState', JSON.stringify(gameState));
-// };
-
-// const loadGameState = () => {
-//   const savedGameState = localStorage.getItem('gameState');
-//   if (savedGameState) {
-//     const gameState = JSON.parse(savedGameState);
-//     Object.assign(playerData, gameState.playerData);
-//     Object.assign(playerInventory, gameState.playerInventory);
-//     Object.assign(monsters, gameState.monsters);
-//     Object.assign(objects, gameState.objects);
-//   }
-// };
-// const gamePaused = ref(false);
-
-// const togglePauseGame = () => {
-//   gamePaused.value = !gamePaused.value;
-//   if (gamePaused.value) {
-//     clearInterval(gameLoop);
-//   } else {
-//     gameLoop = setInterval(gameUpdate, 1000 / 60);
-//   }
-// };
-
-// window.addEventListener('keydown', (event) => {
-//   if (event.key === 'm') {
-//     togglePauseGame();
-//   }
-// });
-
-
-// const playerInventory = reactive([
-//   { name: 'Health Potion', effect: () => { playerData.health = Math.min(playerData.health + 50, 100); } },
-// ]);
-
-
-// const gameLoop = setInterval(loadGameState, 1000 / 60);
 
 </script>
 
