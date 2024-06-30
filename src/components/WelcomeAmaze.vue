@@ -78,7 +78,7 @@ onMounted(() => {
 
   <img src="/src/assets/background/secret.gif" class="page2">
 
-  <audio ref="music" src="/src/assets/sound/fix suzume instrumental.mp3" loop ></audio>
+  <audio ref="music" src="/assets/sound/fix suzume instrumental.mp3" loop ></audio>
   
   <!-- <div class ="parallax">
     <div class="layer">
@@ -267,6 +267,7 @@ img{
   font-size: 60px;
   animation: changeColor 5s infinite;
   margin: 30px;
+  
 }
 
 

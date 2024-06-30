@@ -1,5 +1,5 @@
 <template>
-    <div id="winscreen">
+    <div id="container">
         <div id="buttons">
             <h1>You win!</h1>
             <button class = "deathScreenButton" @click="navigateToGame">Restart level</button>
@@ -22,7 +22,7 @@ export default {
 }
 </script>
 
-<style>
+<style >
 #container {
     display:flex;
 }
@@ -38,32 +38,5 @@ padding: 15px 30px;
 text-align: center;
 margin: 0 200px;
 cursor: pointer;
-}
-
-h1 {
-  font-size: 60px;
-  animation: changeColor 5s infinite;
-}
-
-
-@keyframes changeColor {
-  0% {
-    color: violet; 
-  }
-  10% {
-    opacity: 1;
-  }
-  25% {
-    color: rgb(191, 39, 130); 
-  }
-  50% {
-    color: rgb(66, 5, 45); 
-  }
-  75% {
-    color: rgb(213, 162, 197); 
-  }
-  100% {
-    color: violet; 
-  }
 }
 </style>
