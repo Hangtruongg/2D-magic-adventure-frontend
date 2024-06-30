@@ -79,7 +79,6 @@ const zoomLevel = 1;
 const router = useRouter();
 
 let requiredCoins; // Number of coins required to move to the next level
-const requiredCoins2 = 30;
 
 const navigateToHomePage =() => {
   router.push({name: 'home'});
@@ -559,11 +558,11 @@ const loadTiles = async (level) => {
     const response = await axios.get(endpoint);
     tiles.value = response.data.tiles;
     requiredCoins = response.data.requiredCoins;
-    console.log("required" + requiredCoins)
     objects.splice(0, objects.length, ...response.data.objects);
 
     // Populate the non-collidable tiles list
-    nonCollidableTiles.value = tiles.value.filter(tile => !tile.collision);
+    // nonCollidableTiles.value = tiles.value.filter(tile => !tile.collision);
+    nonCollidableTiles.value = response.data.spawnableTiles;
 
     console.log(objects.value);
   } catch (error) {
