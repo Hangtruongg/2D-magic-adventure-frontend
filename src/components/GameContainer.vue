@@ -78,7 +78,7 @@ const zoomLevel = 1;
 
 const router = useRouter();
 
-const requiredCoins = 10; // Number of coins required to move to the next level
+let requiredCoins; // Number of coins required to move to the next level
 const requiredCoins2 = 30;
 
 const navigateToHomePage =() => {
@@ -497,21 +497,35 @@ const checkNextLevel = () => {
   if (playerData.collectedCoins >= requiredCoins) {
     const kevin = objects.find(object => object.type === 'kevin');
     if (kevin && checkCollision(playerData.position, kevin.position, 50, 50)) {
-      navigateToNextLevel();
+      navigateToNextLevel(kevin.nextLevel);
     }
+  } else {
+    console.log("not enough")
   }
 };
 
 // Function to navigate to the next level
-const navigateToNextLevel = () => {
-  if (playerData.currentLevel === 1) {
-    loadTiles("levelData2.json");
-    playerData.currentLevel = 2; // Update current level to 2
+const navigateToNextLevel = (nextLevel) => {
+  if(nextLevel !== 'final') {
+    loadTiles(nextLevel);
+    try {
+      const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+      const endpoint = `${baseUrl}/savePlayerData`;
+      const payload = {
+        currentLevel: nextLevel
+      }
+      axios.post(endpoint, payload)
+    } catch (error) {
+      console.error('Error saving level data:', error);
+    }
+  } else {
+    navigateToWinScreen();
   }
-  const kevin = objects.find(object => object.type === 'kevin');
-  if (playerData.collectedCoins >= requiredCoins2 && kevin && checkCollision(playerData.position, kevin.position, 50, 50)) {
-    navigateToWinScreen(); // If in level 2 and meets Kevin with required coins, win the game
-  }
+  // playerData.currentLevel = 2; // Update current level to 2
+  // const kevin = objects.find(object => object.type === 'kevin');
+  // if (playerData.collectedCoins >= requiredCoins2 && kevin && checkCollision(playerData.position, kevin.position, 50, 50)) {
+  //   navigateToWinScreen(); // If in level 2 and meets Kevin with required coins, win the game
+  // }
 };
 
 
@@ -544,6 +558,8 @@ const loadTiles = async (level) => {
   try {
     const response = await axios.get(endpoint);
     tiles.value = response.data.tiles;
+    requiredCoins = response.data.requiredCoins;
+    console.log("required" + requiredCoins)
     objects.splice(0, objects.length, ...response.data.objects);
 
     // Populate the non-collidable tiles list
