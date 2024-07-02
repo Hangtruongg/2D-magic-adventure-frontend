@@ -111,25 +111,18 @@ const loadPlayerData = async () => {
   const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
   const endpoint = `${baseUrl}/getPlayerData`;
   try {
-    console.log("HEY")
     const playerDataResponse = await axios.get(endpoint);
     console.log(playerDataResponse)
-    if(playerDataResponse.status === 200) {
-      if(playerDataResponse.data.currentLevel !== null && playerDataResponse.data.currentLevel !== '') {
-        console.log("hey" + playerDataResponse.data.currentLevel)
-        playerData.currentLevel = playerDataResponse.data.currentLevel;
-        console.log("hello" + playerData.currentLevel)
-      }
-      else {
-        playerData.currentLevel = "levelData1.json"
-        const endpointPost = `${baseUrl}/savePlayerData`;
-        const payload = {
-          "currentLevel": "levelData1.json"
-        }
-        axios.post(endpointPost, payload)
-      }
+    if(playerDataResponse.status === 200 && playerDataResponse.data.currentLevel !== null && playerDataResponse.data.currentLevel !== '') {
+      playerData.currentLevel = playerDataResponse.data.currentLevel;
     }
   } catch (error) {
+    playerData.currentLevel = "levelData1.json"
+    const endpointPost = `${baseUrl}/savePlayerData`;
+    const payload = {
+      "currentLevel": "levelData1.json"
+    }
+    axios.post(endpointPost, payload)
     console.error('Error fetching playerData:', error);
   }
 }
