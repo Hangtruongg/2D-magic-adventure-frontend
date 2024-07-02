@@ -136,13 +136,15 @@ const updateKeybinds = async () => {
     }
   }
   else {
-    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
-    const endpoint = `${baseUrl}/getKeybinds`;
-    const keybindResponse = await axios.get(endpoint);
-    if(keybindResponse.status === 200) {
-      localStorage.setItem('keybinds', JSON.stringify(keybindResponse.data));
-      updateKeybinds();
-    } else {
+    try {
+      const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+      const endpoint = `${baseUrl}/getKeybinds`;
+      const keybindResponse = await axios.get(endpoint);
+      if(keybindResponse.status === 200) {
+        localStorage.setItem('keybinds', JSON.stringify(keybindResponse.data));
+        updateKeybinds();
+      }
+    } catch (error) {
       const defaultKeybinds = {moveUp: 'w', moveDown: 's', moveLeft: 'a', moveRight: 'd', shoot: 'f', settings: 'p'};
       Object.assign(keybinds, defaultKeybinds);
     }

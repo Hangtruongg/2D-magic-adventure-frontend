@@ -38,7 +38,7 @@ const router = createRouter({
       path: '/deathscreen',
       name: 'deathscreen',
       component: Deathscreen,
-      // meta: {requiresAuth: true}
+      meta: {requiresAuth: true}
     },
     {
       path: '/settings',
@@ -55,6 +55,7 @@ const router = createRouter({
       path: '/winscreen',
       name: 'winScreen',
       component: WinScreen,
+      meta: {requiresAuth: true}
     }
   ]
 })
