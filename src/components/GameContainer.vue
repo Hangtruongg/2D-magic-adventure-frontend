@@ -90,7 +90,7 @@ const navigateToSettings =() => {
 }
 
 const navigateToWinScreen =() => {
-  router.push({name:'winScreen'});
+  router.push({name:'WinScreen'});
 }
 
 // onMounted(() => {
