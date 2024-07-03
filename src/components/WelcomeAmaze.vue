@@ -63,7 +63,7 @@ onMounted(() => {
       <span id="about" @click="navigateToAbout" class="material-symbol-outlined">About A-maze</span>
       <span id="new" onclick="newIcon()" class="material-symbol-outlined">News</span>
       <span id="creative" onclick="creativeIcon()" class="material-symbol-outlined">Creative</span>
-      <button class="signUpButton" @click="navigateToSignUp">Sign Up</button>
+      <!-- <button class="signUpButton" @click="navigateToSignUp">Sign Up</button> -->
       <button class="loginButton" @click="navigateToRegister">Login</button>
       <!-- <button class="playMusic" @click="playMusic">Play Music</button> -->
     </div>
