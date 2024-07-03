@@ -55,7 +55,7 @@ const router = createRouter({
       path: '/winscreen',
       name: 'winScreen',
       component: WinScreen,
-      meta: {requiresAuth: true}
+      // meta: {requiresAuth: true}
     }
   ]
 })
