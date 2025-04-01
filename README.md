@@ -1,10 +1,10 @@
 # A-MAZE: Adventure 2D Game
 
-![Screenshot 2024-10-18 143738.png](Screenshot_2024-10-18_143738.png)
+![img.png](img.png)
 
-![Screenshot 2024-10-18 143818.png](Screenshot_2024-10-18_143818.png)
+![img_1.png](img_1.png)
 
-![Screenshot 2024-10-18 144332.png](Screenshot_2024-10-18_144332.png)
+![img_2.png](img_2.png)
 
 
 **Table of Contents:**
